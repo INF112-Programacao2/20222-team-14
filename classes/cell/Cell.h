@@ -2,20 +2,12 @@
 class Cell
 {
 private:
-    char name;
     int x;
     int y;  
     Piece *piece;
 public:
-    Cell(/* args */);
+    Cell(int x, int y);
+    Cell();
     ~Cell();
     
 };
-
-Cell::Cell(/* args */)
-{
-}
-
-Cell::~Cell()
-{
-}

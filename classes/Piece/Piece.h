@@ -2,6 +2,7 @@ class Piece
 {
 private:
     char name;
+    char time;
 public:
     Piece(/* args */);
     ~Piece();
