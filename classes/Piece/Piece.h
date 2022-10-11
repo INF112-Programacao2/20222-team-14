@@ -7,7 +7,7 @@ public:
     ~Piece();
 
 
-
+ccc;
 };
 
 
