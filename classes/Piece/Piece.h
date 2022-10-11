@@ -6,8 +6,7 @@ public:
     Piece(/* args */);
     ~Piece();
 
-
-ccc;
+    char getName();
 };
 
 

@@ -1,10 +1,15 @@
+#include "..\Piece\Piece.h"
 class Cell
 {
 private:
-    /* data */
+    char name;
+    int x;
+    int y;  
+    Piece *piece;
 public:
     Cell(/* args */);
     ~Cell();
+    
 };
 
 Cell::Cell(/* args */)
