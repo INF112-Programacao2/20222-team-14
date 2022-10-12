@@ -2,12 +2,16 @@ class Piece
 {
 private:
     char name;
-    char time;
+    int team;
 public:
-    Piece(/* args */);
+    Piece(char name, int team);
     ~Piece();
 
-    char getName();
+    char getName() const;
+
+
+    int getTeam() const;
+
 };
 
 

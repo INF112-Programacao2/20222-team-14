@@ -1,16 +1,107 @@
 #include "Board.h"
+#include <iostream>
+#include <string>
+using namespace std;
 
 Board::Board() {
-    this->pieces = new Piece *[8];
+    this->playerTime = 1;
+    this->cells = new Cell *[8];
     for (int i = 0; i < 8; i++) {
-        this->pieces[i] = new Piece[8];
+        this->cells[i] = new Cell[8];
         for (int j = 0; j < 8; j++) {
-            this->pieces[i][j] = Piece();
-        }
+            this->cells[i][j] = Cell();
+            if (i == 1 || i == 6) {
+                this->cells[i][j].setPiece(new Piece('P', i == 1 ? 1 : 0));
+            }
 
+            if (i == 0 || i == 7) {
+                switch (j) {
+                    case 0:
+                    case 7:
+                        this->cells[i][j].setPiece(new Piece('R', i == 0 ? 1 : 0));
+                        break;
+                    case 1:
+                    case 6:
+                        this->cells[i][j].setPiece(new Piece('N', i == 0 ? 1 : 0));
+                        break;
+                    case 2:
+                    case 5:
+                        this->cells[i][j].setPiece(new Piece('B', i == 0 ? 1 : 0));
+                        break;
+                    case 3:
+                        this->cells[i][j].setPiece(new Piece('Q', i == 0 ? 1 : 0));
+                        break;
+                    case 4:
+                        this->cells[i][j].setPiece(new Piece('K', i == 0 ? 1 : 0));
+                        break;
+                }
+            }
+        }
     }
 }
 
 Board::~Board() {
     delete this;
+}
+
+void Board::movePiece(string piecePosition, string destinationPosition) {
+    if (piecePosition.length() != 2 || destinationPosition.length() != 2) {
+        cout << "Invalid position" << endl;
+        return;
+    }
+
+    int yPiecePosition = (piecePosition[0] - 'a') ;
+    int xPiecePosition = 8-stoi(piecePosition.substr(1, 1));
+    int xDestinationPosition = 8-stoi(destinationPosition.substr(1, 1));
+    int yDestinationPosition = (destinationPosition[0] - 'a') ;
+
+//    cout << xPiecePosition << " " << yPiecePosition << " " << xDestinationPosition << " " << yDestinationPosition << endl;
+
+    if (xPiecePosition < 0 || xPiecePosition > 7 || yPiecePosition < 0 || yPiecePosition > 7 ||
+        xDestinationPosition < 0 || xDestinationPosition > 7 || yDestinationPosition < 0 || yDestinationPosition > 7) {
+        cout << "Invalid position" << endl;
+        return;
+    }
+
+    bool isOccupied= this->cells[xPiecePosition][yPiecePosition].isOccupied;
+    if (!isOccupied) {
+        cout << "There is no piece in this position" << endl;
+        return;
+    }
+
+    Piece *piece = this->cells[xPiecePosition][yPiecePosition].getPiece();
+    this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
+    this->cells[xPiecePosition][yPiecePosition].setPiece(nullptr);
+    this->playerTime = this->playerTime == 1 ? 2 : 1;
+
+
+}
+
+bool Board::isGameOver() {
+    return false;
+}
+
+Cell *Board::getCell(int x, int y) {
+    Cell *cell = (this->cells[x]) + y;
+    return cell;
+}
+
+int Board::getTurn() {
+    return this->playerTime;
+}
+
+TotalPiece Board::getTotalPieces() {
+    int totalWhitePieces = 0;
+    int totalBlackPieces = 0;
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            Cell *cell = this->cells[i]+j;
+            if(cell->isOccupied && cell->getPiece()->getTeam() == 1) {
+                totalWhitePieces++;
+            }else if(cell->isOccupied && cell->getPiece()->getTeam() == 0) {
+                totalBlackPieces++;
+            }
+        }
+    }
+    return {totalBlackPieces, totalWhitePieces};
 }
