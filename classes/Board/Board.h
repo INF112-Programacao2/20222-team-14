@@ -1,4 +1,5 @@
-#include "../cell/Cell.h"
+#include "../Piece/Piece.h"
+
 class Board
 {
 private:
@@ -6,8 +7,6 @@ private:
     bool inGame;
 
 public:
-    Board()
-    {
-    };
+    Board();
     ~Board();
 };
