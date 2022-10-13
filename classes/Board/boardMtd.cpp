@@ -26,7 +26,7 @@ Board::Board() {
                         break;
                     case 2:
                     case 5:
-                        this->cells[i][j].setPiece(new Piece('B', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new Bishop('B', i == 0 ? 1 : 0));
                         break;
                     case 3:
                         this->cells[i][j].setPiece(new Piece('Q', i == 0 ? 1 : 0));

@@ -1,3 +1,7 @@
+#ifndef INC_20222_TEAM_14_BoardController_H
+#define INC_20222_TEAM_14_BoardController_H
+
+
 #include "../../classes/Board/Board.h"
 
 class BoardController {
@@ -18,3 +22,5 @@ public:
 
     void showStatus();
 };
+
+#endif //INC_20222_TEAM_14_BoardController_H

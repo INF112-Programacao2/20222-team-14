@@ -7,6 +7,7 @@ include_directories(classes/Board)
 include_directories(classes/Piece)
 include_directories(classes/Tower)
 include_directories(classes/Cell)
+include_directories(classes/Bishop)
 include_directories(controllers/BoardController)
 
 add_executable(20222_team_14
@@ -15,6 +16,8 @@ add_executable(20222_team_14
         classes/Cell/Cell.h
         classes/Cell/cellMtd.cpp
         classes/Piece/Piece.h
+        classes/Bishop/Bishop.h
+        classes/Bishop/bishopMtd.cpp
         classes/Tower/Tower.h
         classes/Tower/towerMtd.cpp
         classes/Piece/pieceMtd.cpp
