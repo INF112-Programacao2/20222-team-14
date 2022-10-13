@@ -152,6 +152,30 @@ classes/Board/boardMtd.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\20222_team_14.dir\build.make CMakeFiles/20222_team_14.dir/classes/Board/boardMtd.cpp.s
 .PHONY : classes/Board/boardMtd.cpp.s
 
+classes/Cell/CellMtd.obj: classes/Cell/CellMtd.cpp.obj
+.PHONY : classes/Cell/CellMtd.obj
+
+# target to build an object file
+classes/Cell/CellMtd.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20222_team_14.dir\build.make CMakeFiles/20222_team_14.dir/classes/Cell/CellMtd.cpp.obj
+.PHONY : classes/Cell/CellMtd.cpp.obj
+
+classes/Cell/CellMtd.i: classes/Cell/CellMtd.cpp.i
+.PHONY : classes/Cell/CellMtd.i
+
+# target to preprocess a source file
+classes/Cell/CellMtd.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20222_team_14.dir\build.make CMakeFiles/20222_team_14.dir/classes/Cell/CellMtd.cpp.i
+.PHONY : classes/Cell/CellMtd.cpp.i
+
+classes/Cell/CellMtd.s: classes/Cell/CellMtd.cpp.s
+.PHONY : classes/Cell/CellMtd.s
+
+# target to generate assembly for a file
+classes/Cell/CellMtd.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20222_team_14.dir\build.make CMakeFiles/20222_team_14.dir/classes/Cell/CellMtd.cpp.s
+.PHONY : classes/Cell/CellMtd.cpp.s
+
 classes/Piece/PieceMtd.obj: classes/Piece/PieceMtd.cpp.obj
 .PHONY : classes/Piece/PieceMtd.obj
 
@@ -175,6 +199,30 @@ classes/Piece/PieceMtd.s: classes/Piece/PieceMtd.cpp.s
 classes/Piece/PieceMtd.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\20222_team_14.dir\build.make CMakeFiles/20222_team_14.dir/classes/Piece/PieceMtd.cpp.s
 .PHONY : classes/Piece/PieceMtd.cpp.s
+
+classes/Piece/totalPieceMtd.obj: classes/Piece/totalPieceMtd.cpp.obj
+.PHONY : classes/Piece/totalPieceMtd.obj
+
+# target to build an object file
+classes/Piece/totalPieceMtd.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20222_team_14.dir\build.make CMakeFiles/20222_team_14.dir/classes/Piece/totalPieceMtd.cpp.obj
+.PHONY : classes/Piece/totalPieceMtd.cpp.obj
+
+classes/Piece/totalPieceMtd.i: classes/Piece/totalPieceMtd.cpp.i
+.PHONY : classes/Piece/totalPieceMtd.i
+
+# target to preprocess a source file
+classes/Piece/totalPieceMtd.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20222_team_14.dir\build.make CMakeFiles/20222_team_14.dir/classes/Piece/totalPieceMtd.cpp.i
+.PHONY : classes/Piece/totalPieceMtd.cpp.i
+
+classes/Piece/totalPieceMtd.s: classes/Piece/totalPieceMtd.cpp.s
+.PHONY : classes/Piece/totalPieceMtd.s
+
+# target to generate assembly for a file
+classes/Piece/totalPieceMtd.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20222_team_14.dir\build.make CMakeFiles/20222_team_14.dir/classes/Piece/totalPieceMtd.cpp.s
+.PHONY : classes/Piece/totalPieceMtd.cpp.s
 
 controllers/BoardController/BoardControllerMtd.obj: controllers/BoardController/BoardControllerMtd.cpp.obj
 .PHONY : controllers/BoardController/BoardControllerMtd.obj
@@ -236,9 +284,15 @@ help:
 	@echo ... classes/Board/boardMtd.obj
 	@echo ... classes/Board/boardMtd.i
 	@echo ... classes/Board/boardMtd.s
+	@echo ... classes/Cell/CellMtd.obj
+	@echo ... classes/Cell/CellMtd.i
+	@echo ... classes/Cell/CellMtd.s
 	@echo ... classes/Piece/PieceMtd.obj
 	@echo ... classes/Piece/PieceMtd.i
 	@echo ... classes/Piece/PieceMtd.s
+	@echo ... classes/Piece/totalPieceMtd.obj
+	@echo ... classes/Piece/totalPieceMtd.i
+	@echo ... classes/Piece/totalPieceMtd.s
 	@echo ... controllers/BoardController/BoardControllerMtd.obj
 	@echo ... controllers/BoardController/BoardControllerMtd.i
 	@echo ... controllers/BoardController/BoardControllerMtd.s

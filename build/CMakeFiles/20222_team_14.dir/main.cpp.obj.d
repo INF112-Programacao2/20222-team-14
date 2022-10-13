@@ -134,4 +134,6 @@ CMakeFiles/20222_team_14.dir/main.cpp.obj: \
  C:/msys64/mingw64/include/c++/11.2.0/bits/istream.tcc \
  C:/Users/rafau/Desktop/20222-team-14-2/controllers/BoardController/BoardController.h \
  C:/Users/rafau/Desktop/20222-team-14-2/classes/Board/Board.h \
- C:/Users/rafau/Desktop/20222-team-14-2/classes/Piece/Piece.h
+ C:/Users/rafau/Desktop/20222-team-14-2/classes/Cell/Cell.h \
+ C:/Users/rafau/Desktop/20222-team-14-2/classes/Piece/Piece.h \
+ C:/Users/rafau/Desktop/20222-team-14-2/classes/Piece/TotalPiece.h
