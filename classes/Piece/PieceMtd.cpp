@@ -18,4 +18,8 @@ int Piece::getTeam() const {
     return team;
 }
 
+bool Piece::checkMove(int xPosition,int  yPosition,int xDest, int yDest) {
+    return false;
+}
+
 

@@ -93,15 +93,15 @@ int Board::getTurn() {
 TotalPiece Board::getTotalPieces() {
     int totalWhitePieces = 0;
     int totalBlackPieces = 0;
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            Cell *cell = this->cells[i]+j;
-            if(cell->isOccupied && cell->getPiece()->getTeam() == 1) {
-                totalWhitePieces++;
-            }else if(cell->isOccupied && cell->getPiece()->getTeam() == 0) {
-                totalBlackPieces++;
-            }
-        }
-    }
+//    for(int i = 0; i < 8; i++) {
+//        for(int j = 0; j < 8; j++) {
+//            Cell *cell = this->cells[i]+j;
+//            if(cell->isOccupied && cell->getPiece()->getTeam() == 1) {
+//                totalWhitePieces++;
+//            }else if(cell->isOccupied && cell->getPiece()->getTeam() == 0) {
+//                totalBlackPieces++;
+//            }
+//        }
+//    }
     return {totalBlackPieces, totalWhitePieces};
 }

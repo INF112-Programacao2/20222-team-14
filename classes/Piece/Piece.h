@@ -12,6 +12,8 @@ public:
 
     int getTeam() const;
 
+    virtual bool checkMove(int xPosition,int  yPosition,int xDest, int yDest);
+
 };
 
 
