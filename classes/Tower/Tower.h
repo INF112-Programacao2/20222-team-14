@@ -1,5 +1,5 @@
-#include "../Piece/Piece.h"
 
+#include "../Piece/Piece.h"
 class Tower : public Piece {
 public:
     Tower(char name, int team);
