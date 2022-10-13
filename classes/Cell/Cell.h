@@ -1,5 +1,5 @@
 
-#include "../Piece/Piece.h"
+#include "../Tower/Tower.h"
 
 class Cell {
 private:
