@@ -7,6 +7,7 @@
 #include "../King/King.h"
 #include "../Knight/Knight.h"
 #include "../Rook/Rook.h"
+#include "../Queen/Queen.h"
 #include "../Bishop/Bishop.h"
 #include "../Pawn/Pawn.h"
 #include <string>

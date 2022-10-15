@@ -30,7 +30,7 @@ Board::Board() {
                         this->cells[i][j].setPiece(new Bishop('B', i == 0 ? 1 : 0));
                         break;
                     case 3:
-                        this->cells[i][j].setPiece(new Piece('Q', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new Queen('Q', i == 0 ? 1 : 0));
                         break;
                     case 4:
                         this->cells[i][j].setPiece(new King('K', i == 0 ? 1 : 0));
@@ -69,11 +69,19 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
         cout << "Invalid position" << endl;
         return;
     }
-
-    int yPiecePosition = (piecePosition[0] - 'a');
-    int xPiecePosition = 8 - stoi(piecePosition.substr(1, 1));
-    int xDestinationPosition = 8 - stoi(destinationPosition.substr(1, 1));
-    int yDestinationPosition = (destinationPosition[0] - 'a');
+    int yPiecePosition = 0;
+    int xPiecePosition = 0;
+    int yDestinationPosition = 0;
+    int xDestinationPosition = 0;
+    try {
+        yPiecePosition = (piecePosition[0] - 'a');
+        xPiecePosition = 8 - stoi(piecePosition.substr(1, 1));
+        xDestinationPosition = 8 - stoi(destinationPosition.substr(1, 1));
+        yDestinationPosition = (destinationPosition[0] - 'a');
+    } catch (exception e) {
+        cout << "Invalid position" << endl;
+        return;
+    }
 
 //    cout << xPiecePosition << " " << yPiecePosition << " " << xDestinationPosition << " " << yDestinationPosition << endl;
 
@@ -143,7 +151,7 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
     if (yPiecePosition == yDestinationPosition) {
         for (int i = min(xPiecePosition, xDestinationPosition) + 1;
              i < max(xPiecePosition, xDestinationPosition); i++) {
-            cout << i << " --- " <<  max(xPiecePosition, xDestinationPosition) << endl;
+            cout << i << " --- " << max(xPiecePosition, xDestinationPosition) << endl;
             if (this->cells[i][yPiecePosition].isOccupied) {
                 cout << "There is a piece in the way" << endl;
                 return;

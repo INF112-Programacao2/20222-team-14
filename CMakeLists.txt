@@ -10,6 +10,7 @@ include_directories(classes/Rook)
 include_directories(classes/King)
 include_directories(classes/Knight)
 include_directories(classes/Pawn)
+include_directories(classes/Queen)
 include_directories(classes/Cell)
 include_directories(classes/Bishop)
 include_directories(controllers/BoardController)
@@ -25,6 +26,8 @@ add_executable(20222_team_14
         classes/Pawn/Pawn.h
         classes/Pawn/pawnMtd.cpp
         classes/Bishop/Bishop.h
+        classes/Queen/Queen.h
+        classes/Queen/queenMtd.cpp
         classes/Bishop/bishopMtd.cpp
         classes/Knight/Knight.h
         classes/Knight/knightMtd.cpp
