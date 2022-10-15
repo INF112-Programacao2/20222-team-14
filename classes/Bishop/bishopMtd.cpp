@@ -1,7 +1,7 @@
 //
 // Created by pedro on 13/10/2022.
 //
-
+#include "../Piece/Piece.h"
 #include "Bishop.h"
 Bishop::Bishop(char name, int team) : Piece(name, team) {
 

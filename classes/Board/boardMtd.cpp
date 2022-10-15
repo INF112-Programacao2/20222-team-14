@@ -1,6 +1,7 @@
 #include "Board.h"
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 Board::Board() {
@@ -11,7 +12,7 @@ Board::Board() {
         for (int j = 0; j < 8; j++) {
             this->cells[i][j] = Cell();
             if (i == 1 || i == 6) {
-                this->cells[i][j].setPiece(new Piece('P', i == 1 ? 1 : 0));
+                this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
             }
 
             if (i == 0 || i == 7) {
@@ -32,7 +33,7 @@ Board::Board() {
                         this->cells[i][j].setPiece(new Piece('Q', i == 0 ? 1 : 0));
                         break;
                     case 4:
-                        this->cells[i][j].setPiece(new Piece('K', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new King('K', i == 0 ? 1 : 0));
                         break;
                 }
             }
@@ -44,16 +45,35 @@ Board::~Board() {
     delete this;
 }
 
+bool
+verifyMove(Piece *piece, int xPiecePosition, int yPiecePosition, int xDestinationPosition, int yDestinationPosition) {
+    if (!piece->checkMove(xPiecePosition, yPiecePosition, xDestinationPosition, yDestinationPosition)) {
+        cout << "Invalid move for that piece" << endl;
+        return false;
+    }
+    return true;
+}
+
+bool verifyKill(Piece *piece, Piece *destPiece, int xPiecePosition, int yPiecePosition, int xDestinationPosition,
+                int yDestinationPosition) {
+    if (!piece->canKill(*destPiece, xPiecePosition,
+                        yPiecePosition, xDestinationPosition, yDestinationPosition)) {
+        cout << "You can't kill that piece" << endl;
+        return false;
+    }
+    return true;
+}
+
 void Board::movePiece(string piecePosition, string destinationPosition) {
     if (piecePosition.length() != 2 || destinationPosition.length() != 2) {
         cout << "Invalid position" << endl;
         return;
     }
 
-    int yPiecePosition = (piecePosition[0] - 'a') ;
-    int xPiecePosition = 8-stoi(piecePosition.substr(1, 1));
-    int xDestinationPosition = 8-stoi(destinationPosition.substr(1, 1));
-    int yDestinationPosition = (destinationPosition[0] - 'a') ;
+    int yPiecePosition = (piecePosition[0] - 'a');
+    int xPiecePosition = 8 - stoi(piecePosition.substr(1, 1));
+    int xDestinationPosition = 8 - stoi(destinationPosition.substr(1, 1));
+    int yDestinationPosition = (destinationPosition[0] - 'a');
 
 //    cout << xPiecePosition << " " << yPiecePosition << " " << xDestinationPosition << " " << yDestinationPosition << endl;
 
@@ -63,52 +83,77 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
         return;
     }
 
-    bool isOccupied= this->cells[xPiecePosition][yPiecePosition].isOccupied;
+    bool isOccupied = this->cells[xPiecePosition][yPiecePosition].isOccupied;
     if (!isOccupied) {
         cout << "There is no piece in this position" << endl;
         return;
     }
 
     Piece *piece = this->cells[xPiecePosition][yPiecePosition].getPiece();
-    if(!piece->checkMove(xPiecePosition, yPiecePosition, xDestinationPosition, yDestinationPosition)){
-        cout << "Invalid move for that piece" << endl;
-        return;
+    Piece *destPiece = nullptr;
+    if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
+        destPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
     }
 
-    if(this->cells[xDestinationPosition][yDestinationPosition].isOccupied){
+    if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         Piece *dPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
-        if(dPiece != nullptr && piece->getTeam() == dPiece->getTeam()){
+        if (dPiece != nullptr && piece->getTeam() == dPiece->getTeam()) {
             cout << "You can't kill your own piece" << endl;
             return;
         }
     }
+    if (destPiece != nullptr) {
+        if (destPiece->getName() != 'P') {
+            if (verifyMove(piece, xPiecePosition, yPiecePosition, xDestinationPosition, yDestinationPosition)) {
+                if (!verifyKill(piece, destPiece, xPiecePosition, yPiecePosition, xDestinationPosition,
+                                yDestinationPosition)) {
+                    return;
+                }
+            } else {
+                return;
+            }
+        } else {
+            if (!verifyKill(piece, destPiece, xPiecePosition, yPiecePosition, xDestinationPosition,
+                            yDestinationPosition)) {
+                return;
+            }
+        }
+    } else {
+        if (!verifyMove(piece, xPiecePosition, yPiecePosition, xDestinationPosition, yDestinationPosition)) {
+            return;
+        }
+    }
 
-    if(xPiecePosition == xDestinationPosition && yPiecePosition == yDestinationPosition){
+
+    if (xPiecePosition == xDestinationPosition && yPiecePosition == yDestinationPosition) {
         cout << "You can't move to the same position" << endl;
         return;
     }
 
-    if(xPiecePosition == xDestinationPosition){
-        for(int i = min(yPiecePosition, yDestinationPosition)+1; i < max(yPiecePosition, yDestinationPosition); i++){
-            if(this->cells[xPiecePosition][i].isOccupied){
+    if (xPiecePosition == xDestinationPosition) {
+        for (int i = min(yPiecePosition, yDestinationPosition) + 1;
+             i < max(yPiecePosition, yDestinationPosition); i++) {
+            if (this->cells[xPiecePosition][i].isOccupied) {
                 cout << "There is a piece in the way" << endl;
                 return;
             }
         }
     }
 
-    if(yPiecePosition == yDestinationPosition){
-        for(int i = min(xPiecePosition, xDestinationPosition)+1; i < max(xPiecePosition, xDestinationPosition); i++){
-            if(this->cells[i][yPiecePosition].isOccupied){
+    if (yPiecePosition == yDestinationPosition) {
+        for (int i = min(xPiecePosition, xDestinationPosition) + 1;
+             i < max(xPiecePosition, xDestinationPosition); i++) {
+            if (this->cells[i][yPiecePosition].isOccupied) {
                 cout << "There is a piece in the way" << endl;
                 return;
             }
         }
     }
 
-    if(yPiecePosition - xPiecePosition == yDestinationPosition - xDestinationPosition){
-        for(int i = min(xPiecePosition, xDestinationPosition)+1; i < max(xPiecePosition, xDestinationPosition); i++){
-            if(this->cells[i][i - xPiecePosition + yPiecePosition].isOccupied){
+    if (yPiecePosition - xPiecePosition == yDestinationPosition - xDestinationPosition) {
+        for (int i = min(xPiecePosition, xDestinationPosition) + 1;
+             i < max(xPiecePosition, xDestinationPosition); i++) {
+            if (this->cells[i][i - xPiecePosition + yPiecePosition].isOccupied) {
                 cout << "There is a piece in the way" << endl;
                 return;
             }

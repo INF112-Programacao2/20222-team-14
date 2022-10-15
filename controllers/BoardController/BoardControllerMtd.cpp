@@ -14,7 +14,7 @@ BoardController::~BoardController() {
 
 void BoardController::drawBoard() {
 
-    cout << "     a b c d e f g h" << endl;
+    cout << "     a  b  c  d  e  f  g  a2h" << endl;
     cout << endl;
     for (int i = 0; i < 8; i++) {
         cout << 8 - i << "    ";
@@ -23,7 +23,7 @@ void BoardController::drawBoard() {
             if (piece == nullptr) {
                 cout << "  ";
             } else {
-                cout << piece->getName() << " ";
+                cout << piece->getTeam() << piece->getName() << " ";
             }
         }
         cout << endl;
@@ -37,13 +37,12 @@ void BoardController::movePiece() {
     } else {
         cout << " - Black Pieces turn" << endl;
     }
-    cout << "Enter the piece position: " << endl;
-    string piecePosition;
-    cin >> piecePosition;
-    cout << "Enter the destination position: " << endl;
-    string destinationPosition;
-    cin >> destinationPosition;
-    board->movePiece(piecePosition, destinationPosition);
+    cout << "Enter the positions: ";
+    string positions;
+    cin >> positions;
+    string piecePosition = positions.substr(0, 2);
+    string destPosition = positions.substr(2, 2);
+    board->movePiece(piecePosition, destPosition);
 }
 
 

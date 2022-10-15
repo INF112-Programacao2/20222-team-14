@@ -4,8 +4,11 @@
 
 #include "../Piece/TotalPiece.h"
 #include "../Cell/Cell.h"
+#include "../King/King.h"
+#include "../Knight/Knight.h"
 #include "../Tower/Tower.h"
 #include "../Bishop/Bishop.h"
+#include "../Pawn/Pawn.h"
 #include <string>
 
 using namespace std;

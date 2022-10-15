@@ -5,7 +5,7 @@ Piece::Piece(char name, int team) {
     this->team = team;
 }
 
-Piece::~Piece(){
+Piece::~Piece() {
     delete this;
 }
 
@@ -18,8 +18,10 @@ int Piece::getTeam() const {
     return team;
 }
 
-bool Piece::checkMove(int xPosition,int  yPosition,int xDest, int yDest) {
+bool Piece::checkMove(int xPosition, int yPosition, int xDest, int yDest) {
     return true;
 }
 
-
+bool Piece::canKill(Piece &piece, int xPosition, int yPosition, int xDest, int yDest) {
+    return true;
+}
