@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\20222_team_14.dir/objects.a
-C:\msys64\mingw64\bin\ar.exe qc CMakeFiles\20222_team_14.dir/objects.a @CMakeFiles\20222_team_14.dir\objects1.rsp
-C:\msys64\mingw64\bin\c++.exe -g -Wl,--whole-archive CMakeFiles\20222_team_14.dir/objects.a -Wl,--no-whole-archive -o 20222_team_14.exe -Wl,--out-implib,lib20222_team_14.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\20222_team_14.dir\linklibs.rsp
