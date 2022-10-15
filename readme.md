@@ -25,7 +25,22 @@ Projeto final da disciplina de Programação II (INF112) do semestre letivo 2022
 
 ## Documentação
 
-- Configuração
-    - [Instalação Cmake](https://cmake.org/install/)
-    - [Interface Gráfica](/docs/install-wxwidgets.md)
-    - [Documentação seguida para definição das gregas de negócio](https://www.tabuleirodexadrez.com.br/regras-do-xadrez.html)
+### Configuração
+- [Instalação Cmake](https://cmake.org/install/)
+
+- [Interface Gráfica](/docs/install-wxwidgets.md)
+
+- [Documentação seguida para definição das gregas de negócio](https://www.tabuleirodexadrez.com.br/regras-do-xadrez.html)
+
+
+
+### Gerando build
+
+```bash
+cmake -S . -B Build -G "MinGW Makefiles"
+```
+
+### Executando a build
+  Para executar a build gerada no passo anterior, basta executar o comando ao lado dentro do dirétorio "build" gerado na raiz do projeto:
+
+     cmake -S . -B Build -G "MinGW Makefiles"
