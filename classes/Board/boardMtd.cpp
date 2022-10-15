@@ -5,7 +5,7 @@
 using namespace std;
 
 Board::Board() {
-    this->playerTime = 1;
+    this->playerTime = 0;
     this->cells = new Cell *[8];
     for (int i = 0; i < 8; i++) {
         this->cells[i] = new Cell[8];
@@ -103,6 +103,11 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
         destPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
     }
 
+    if (this->getTurn() != piece->getTeam()) {
+        cout << "You are trying to move a enemy piece" << endl;
+        return;
+    }
+
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         Piece *dPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
         if (dPiece != nullptr && piece->getTeam() == dPiece->getTeam()) {
@@ -138,33 +143,35 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
         return;
     }
 
-    if (xPiecePosition == xDestinationPosition) {
-        for (int i = min(yPiecePosition, yDestinationPosition) + 1;
-             i < max(yPiecePosition, yDestinationPosition); i++) {
-            if (this->cells[xPiecePosition][i].isOccupied) {
-                cout << "There is a piece in the wayss" << endl;
-                return;
+    if (piece->getName() != 'K') {
+        if (xPiecePosition == xDestinationPosition) {
+            for (int i = min(yPiecePosition, yDestinationPosition) + 1;
+                 i < max(yPiecePosition, yDestinationPosition); i++) {
+                if (this->cells[xPiecePosition][i].isOccupied) {
+                    cout << "There is a piece in the ways" << endl;
+                    return;
+                }
             }
         }
-    }
 
-    if (yPiecePosition == yDestinationPosition) {
-        for (int i = min(xPiecePosition, xDestinationPosition) + 1;
-             i < max(xPiecePosition, xDestinationPosition); i++) {
-            cout << i << " --- " << max(xPiecePosition, xDestinationPosition) << endl;
-            if (this->cells[i][yPiecePosition].isOccupied) {
-                cout << "There is a piece in the way" << endl;
-                return;
+        if (yPiecePosition == yDestinationPosition) {
+            for (int i = min(xPiecePosition, xDestinationPosition) + 1;
+                 i < max(xPiecePosition, xDestinationPosition); i++) {
+                cout << i << " --- " << max(xPiecePosition, xDestinationPosition) << endl;
+                if (this->cells[i][yPiecePosition].isOccupied) {
+                    cout << "There is a piece in the way" << endl;
+                    return;
+                }
             }
         }
-    }
 
-    if (yPiecePosition - xPiecePosition == yDestinationPosition - xDestinationPosition) {
-        for (int i = min(xPiecePosition, xDestinationPosition) + 1;
-             i < max(xPiecePosition, xDestinationPosition); i++) {
-            if (this->cells[i][i - xPiecePosition + yPiecePosition].isOccupied) {
-                cout << "There is a piece in the way" << endl;
-                return;
+        if (yPiecePosition - xPiecePosition == yDestinationPosition - xDestinationPosition) {
+            for (int i = min(xPiecePosition, xDestinationPosition) + 1;
+                 i < max(xPiecePosition, xDestinationPosition); i++) {
+                if (this->cells[i][i - xPiecePosition + yPiecePosition].isOccupied) {
+                    cout << "There is a piece in the way" << endl;
+                    return;
+                }
             }
         }
     }

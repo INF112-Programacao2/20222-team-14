@@ -32,7 +32,7 @@ void BoardController::drawBoard() {
 
 void BoardController::movePiece() {
     cout << "Move piece";
-    if (board->getTurn() == 1) {
+    if (board->getTurn() == 0) {
         cout << " - White Pieces turn" << endl;
     } else {
         cout << " - Black Pieces turn" << endl;
