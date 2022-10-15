@@ -13,6 +13,11 @@ void Cell::setPiece(Piece *newPiece) {
     this->isOccupied = true;
 }
 
+void Cell::removePiece() {
+    this->piece = nullptr;
+    this->isOccupied = false;
+}
+
 Piece *Cell::getPiece() {
     return this->piece;
 }

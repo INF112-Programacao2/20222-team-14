@@ -134,7 +134,7 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
         for (int i = min(yPiecePosition, yDestinationPosition) + 1;
              i < max(yPiecePosition, yDestinationPosition); i++) {
             if (this->cells[xPiecePosition][i].isOccupied) {
-                cout << "There is a piece in the way" << endl;
+                cout << "There is a piece in the wayss" << endl;
                 return;
             }
         }
@@ -143,6 +143,7 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
     if (yPiecePosition == yDestinationPosition) {
         for (int i = min(xPiecePosition, xDestinationPosition) + 1;
              i < max(xPiecePosition, xDestinationPosition); i++) {
+            cout << i << " --- " <<  max(xPiecePosition, xDestinationPosition) << endl;
             if (this->cells[i][yPiecePosition].isOccupied) {
                 cout << "There is a piece in the way" << endl;
                 return;
@@ -161,7 +162,7 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
     }
 
     this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
-    this->cells[xPiecePosition][yPiecePosition].setPiece(nullptr);
+    this->cells[xPiecePosition][yPiecePosition].removePiece();
     this->playerTime = this->playerTime == 1 ? 2 : 1;
 
 
