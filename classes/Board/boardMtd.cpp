@@ -102,7 +102,7 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         destPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
     }
-
+    cout << this->getTurn() << " -- " << piece->getTeam() << endl;
     if (this->getTurn() != piece->getTeam()) {
         cout << "You are trying to move a enemy piece" << endl;
         return;
@@ -178,7 +178,7 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
 
     this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
     this->cells[xPiecePosition][yPiecePosition].removePiece();
-    this->playerTime = this->playerTime == 1 ? 2 : 1;
+    this->playerTime = this->playerTime == 1 ? 0 : 1;
 
 
 }
