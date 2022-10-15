@@ -21,7 +21,7 @@ void BoardController::drawBoard() {
         for (int j = 0; j < 8; j++) {
             Piece *piece = board->getCell(i, j)->getPiece();
             if (piece == nullptr) {
-                cout << "  ";
+                cout << "   ";
             } else {
                 cout << piece->getTeam() << piece->getName() << " ";
             }

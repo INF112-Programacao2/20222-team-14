@@ -19,11 +19,11 @@ Board::Board() {
                 switch (j) {
                     case 0:
                     case 7:
-                        this->cells[i][j].setPiece(new Tower('R', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new Rook('R', i == 0 ? 1 : 0));
                         break;
                     case 1:
                     case 6:
-                        this->cells[i][j].setPiece(new Piece('N', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new Knight('K', i == 0 ? 1 : 0));
                         break;
                     case 2:
                     case 5:
@@ -42,7 +42,7 @@ Board::Board() {
 }
 
 Board::~Board() {
-    delete this;
+    delete cells;
 }
 
 bool

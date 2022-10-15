@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(classes/Board)
 include_directories(classes/Piece)
-include_directories(classes/Tower)
+include_directories(classes/Rook)
 include_directories(classes/King)
 include_directories(classes/Knight)
 include_directories(classes/Pawn)
@@ -28,8 +28,8 @@ add_executable(20222_team_14
         classes/Bishop/bishopMtd.cpp
         classes/Knight/Knight.h
         classes/Knight/knightMtd.cpp
-        classes/Tower/Tower.h
-        classes/Tower/towerMtd.cpp
+        classes/Rook/Rook.h
+        classes/Rook/rookMtd.cpp
         classes/Piece/pieceMtd.cpp
         classes/Piece/TotalPiece.h
         classes/Piece/totalPieceMtd.cpp
