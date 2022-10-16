@@ -3,6 +3,7 @@
 Piece::Piece(char name, int team) {
     this->name = name;
     this->team = team;
+    this->quantMoves = 0;
 }
 
 Piece::~Piece() {
@@ -16,6 +17,18 @@ char Piece::getName() const {
 
 int Piece::getTeam() const {
     return team;
+}
+
+int Piece::getQuantMoves() const {
+    return quantMoves;
+}
+
+void Piece::setQuantMoves(int nQuantMoves) {
+    this->quantMoves = nQuantMoves;
+}
+
+void Piece::incrementQuantMoves() {
+    this->quantMoves++;
 }
 
 bool Piece::checkMove(int xPosition, int yPosition, int xDest, int yDest) {
