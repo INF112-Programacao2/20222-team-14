@@ -13,7 +13,7 @@ Board::Board() {
         for (int j = 0; j < 8; j++) {
             this->cells[i][j] = Cell();
             if (i == 1 || i == 6) {
-//                this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
+                this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
             }
 
             if (i == 0 || i == 7) {
@@ -103,10 +103,10 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         destPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
     }
-//    if (this->getTurn() != piece->getTeam()) {
-//        cout << "You are trying to move a enemy piece" << endl;
-//        return;
-//    }
+    if (this->getTurn() != piece->getTeam()) {
+        cout << "You are trying to move a enemy piece" << endl;
+        return;
+    }
 
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         Piece *dPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
