@@ -175,9 +175,10 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
             }
         }
     }
-
+    piece->incrementQuantMoves();
     this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
     this->cells[xPiecePosition][yPiecePosition].removePiece();
+    cout << "Moved " << piece->getQuantMoves() << endl;
     this->playerTime = this->playerTime == 1 ? 0 : 1;
 
 

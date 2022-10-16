@@ -3,6 +3,7 @@ class Piece
 private:
     char name;
     int team;
+    int quantMoves;
 public:
     Piece(char name, int team);
     ~Piece();
@@ -11,6 +12,10 @@ public:
 
 
     int getTeam() const;
+
+    int getQuantMoves() const;
+    void setQuantMoves(int quantMoves);
+    void incrementQuantMoves();
 
     virtual bool checkMove(int xPosition,int  yPosition,int xDest, int yDest);
 
