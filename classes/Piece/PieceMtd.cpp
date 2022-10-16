@@ -38,3 +38,7 @@ bool Piece::checkMove(int xPosition, int yPosition, int xDest, int yDest) {
 bool Piece::canKill(Piece &piece, int xPosition, int yPosition, int xDest, int yDest) {
     return true;
 }
+
+bool Piece::checkPromotion(int xPosition, int yPosition) {
+    return false;
+}

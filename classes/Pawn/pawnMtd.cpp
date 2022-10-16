@@ -19,7 +19,7 @@ bool Pawn::checkMove(int xPosition, int yPosition, int xDest, int yDest) {
         bDestRange = xPosition - 2;
     }
     if (yPosition == yDest) {
-        if (this->getTeam() == 1 && xDest >= wDestRange) {
+        if (this->getTeam() == 1 && xDest <= wDestRange) {
             return true;
         } else if (this->getTeam() == 0 && xDest >= bDestRange) {
             return true;
@@ -36,6 +36,15 @@ bool Pawn::canKill(Piece &piece, int xPosition, int yPosition, int xDest, int yD
                    (yDest == yPosition + 1 || yDest == yPosition - 1)) {
             return true;
         }
+    }
+    return false;
+}
+
+bool Pawn::checkPromotion(int xPosition, int yPosition) {
+    if (this->getTeam() == 1 && xPosition == 7) {
+        return true;
+    } else if (this->getTeam() == 0 && xPosition == 0) {
+        return true;
     }
     return false;
 }

@@ -15,6 +15,8 @@ public:
     bool checkMove(int xPosition, int yPosition, int xDest, int yDest) override;
 
     bool canKill(Piece &piece, int xPosition, int yPosition, int xDest, int yDest) override;
+
+    bool checkPromotion(int xPosition, int yPosition) override;
 };
 
 #endif //INC_20222_TEAM_14_Pawn_H

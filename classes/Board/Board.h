@@ -34,6 +34,8 @@ public:
     int getTurn();
 
     TotalPiece getTotalPieces();
+
+    void promotePiece(Piece *piece, int xDestinationPosition, int yDestinationPosition);
 };
 
 #endif //INC_20222_TEAM_14_Board_H

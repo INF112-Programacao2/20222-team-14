@@ -21,6 +21,8 @@ public:
     void movePiece();
 
     void showStatus();
+
+    void checkPromotion();
 };
 
 #endif //INC_20222_TEAM_14_BoardController_H

@@ -13,7 +13,7 @@ King::~King() {
 }
 
 bool King::checkMove(int xPosition, int yPosition, int xDest, int yDest) {
-    if ((abs(xPosition - xDest) <= 1 && yDest == yPosition) || (abs(yPosition - yDest) <= 1 && xDest == yDest)) {
+    if ((abs(xPosition - xDest) <= 1 && yDest == yPosition) || (abs(yPosition - yDest) <= 1 && xDest == xPosition)) {
         return true;
     }
     return false;

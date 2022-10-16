@@ -20,6 +20,7 @@ public:
     virtual bool checkMove(int xPosition,int  yPosition,int xDest, int yDest);
 
     virtual bool canKill(Piece &piece,int xPosition,int  yPosition,int xDest, int yDest);
+    virtual bool checkPromotion(int xPosition, int yPosition);
 
 };
 

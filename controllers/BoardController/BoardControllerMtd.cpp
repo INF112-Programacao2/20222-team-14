@@ -45,6 +45,10 @@ void BoardController::movePiece() {
     board->movePiece(piecePosition, destPosition);
 }
 
+void BoardController::checkPromotion() {
+
+}
+
 
 void BoardController::endGame() {
     this->inGame = false;
@@ -59,6 +63,7 @@ void BoardController::startGame() {
         cout << "----------------------------------" << endl;
         showStatus();
         movePiece();
+
     } while (!board->isGameOver());
 }
 

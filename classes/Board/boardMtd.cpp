@@ -23,7 +23,7 @@ Board::Board() {
                         break;
                     case 1:
                     case 6:
-                        this->cells[i][j].setPiece(new Knight('K', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new Knight('N', i == 0 ? 1 : 0));
                         break;
                     case 2:
                     case 5:
@@ -180,8 +180,40 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
     this->cells[xPiecePosition][yPiecePosition].removePiece();
     cout << "Moved " << piece->getQuantMoves() << endl;
     this->playerTime = this->playerTime == 1 ? 0 : 1;
+    if (piece->checkPromotion(xDestinationPosition, yDestinationPosition)) {
+        this->promotePiece(piece, xDestinationPosition, yDestinationPosition);
+    }
 
+}
 
+void Board::promotePiece(Piece *piece, int xDestinationPosition, int yDestinationPosition) {
+    char pieceName;
+    do {
+        cout << "Promote your piece to: " << endl;
+        cout << "1 - Queen" << endl;
+        cout << "2 - Rook" << endl;
+        cout << "3 - Bishop" << endl;
+        cout << "4 - Knight" << endl;
+        cin >> pieceName;
+        switch (pieceName) {
+            case '1':
+                piece = new Queen('Q', piece->getTeam());
+                break;
+            case '2':
+                piece = new Rook('R', piece->getTeam());
+                break;
+            case '3':
+                piece = new Bishop('B', piece->getTeam());
+                break;
+            case '4':
+                piece = new Knight('K', piece->getTeam());
+                break;
+            default:
+                cout << "Invalid option" << endl;
+                return;
+        }
+    } while (pieceName != '1' && pieceName != '2' && pieceName != '3' && pieceName != '4');
+    this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
 }
 
 bool Board::isGameOver() {
