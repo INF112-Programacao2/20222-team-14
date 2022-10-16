@@ -1,6 +1,7 @@
 #include "Board.h"
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ Board::Board() {
         for (int j = 0; j < 8; j++) {
             this->cells[i][j] = Cell();
             if (i == 1 || i == 6) {
-                this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
+//                this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
             }
 
             if (i == 0 || i == 7) {
@@ -102,11 +103,10 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         destPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
     }
-    cout << this->getTurn() << " -- " << piece->getTeam() << endl;
-    if (this->getTurn() != piece->getTeam()) {
-        cout << "You are trying to move a enemy piece" << endl;
-        return;
-    }
+//    if (this->getTurn() != piece->getTeam()) {
+//        cout << "You are trying to move a enemy piece" << endl;
+//        return;
+//    }
 
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         Piece *dPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
@@ -165,10 +165,12 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
             }
         }
 
-        if (yPiecePosition - xPiecePosition == yDestinationPosition - xDestinationPosition) {
+        if (abs(yPiecePosition - yDestinationPosition) == abs(xPiecePosition - xDestinationPosition)) {
             for (int i = min(xPiecePosition, xDestinationPosition) + 1;
                  i < max(xPiecePosition, xDestinationPosition); i++) {
-                if (this->cells[i][i - xPiecePosition + yPiecePosition].isOccupied) {
+                int s = xPiecePosition + yPiecePosition;
+                int j = abs(i - s);
+                if (this->cells[i][j].isOccupied) {
                     cout << "There is a piece in the way" << endl;
                     return;
                 }
