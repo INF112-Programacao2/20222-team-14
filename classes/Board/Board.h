@@ -38,6 +38,8 @@ public:
     void promotePiece(Piece *piece, int xDestinationPosition, int yDestinationPosition);
 
     bool isKingInCheck(int team);
+
+    bool isKingInCheckMate(int team);
 };
 
 #endif //INC_20222_TEAM_14_Board_H

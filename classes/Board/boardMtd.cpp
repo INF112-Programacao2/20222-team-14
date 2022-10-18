@@ -234,6 +234,8 @@ void Board::movePiece(string piecePosition, string destinationPosition, bool isV
 //    }
 
     // check if the king is in check
+    // check if the king is in check after the move
+    // check if the king is out of check after the move
     if (!isVirtual) {
         if (this->isKingInCheck(piece->getTeam())) {
             auto *virtualBoard = new Board(*this);
@@ -254,7 +256,11 @@ void Board::movePiece(string piecePosition, string destinationPosition, bool isV
         }
     }
 
-    // check if the king is in check after the move
+    //check if the king is in check mate
+//    if (this->isKingInCheckMate(piece->getTeam())) {
+//        cout << "You are in check mate" << endl;
+//        return;
+//    }
 
 
     piece->incrementQuantMoves();
@@ -350,4 +356,39 @@ bool Board::isKingInCheck(int team) {
         }
     }
     return false;
+}
+
+bool Board::isKingInCheckMate(int team) {
+//    int xKingPosition = 0;
+//    int yKingPosition = 0;
+//    for (int i = 0; i < 8; i++) {
+//        for (int j = 0; j < 8; j++) {
+//            Cell *cell = this->cells[i] + j;
+//            if (cell->isOccupied && cell->getPiece()->getName() == 'K' && cell->getPiece()->getTeam() == team) {
+//                xKingPosition = i;
+//                yKingPosition = j;
+//            }
+//        }
+//    }
+//    for (int i = 0; i < 8; i++) {
+//        for (int j = 0; j < 8; j++) {
+//            Cell *cell = this->cells[i] + j;
+//            if (cell->isOccupied && cell->getPiece()->getTeam() == team) {
+//                for (int k = 0; k < 8; k++) {
+//                    for (int l = 0; l < 8; l++) {
+//                        if (cell->getPiece()->checkMove(i, j, k, l)) {
+//                            auto *virtualBoard = new Board(*this);
+//                            virtualBoard->movePiece({i, j}, {k, l}, true);
+//                            if (!virtualBoard->isKingInCheck(team)) {
+//                                delete virtualBoard;
+//                                return false;
+//                            }
+//                            delete virtualBoard;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+    return true;
 }
