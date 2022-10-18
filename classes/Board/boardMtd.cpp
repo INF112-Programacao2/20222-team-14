@@ -5,6 +5,17 @@
 
 using namespace std;
 
+Board::Board(Board const &board) {
+    this->cells = new Cell *[8];
+    for (int i = 0; i < 8; i++) {
+        this->cells[i] = new Cell[8];
+        for (int j = 0; j < 8; j++) {
+            this->cells[i][j] = board.cells[i][j];
+        }
+    }
+    this->playerTime = board.playerTime;
+}
+
 Board::Board() {
     this->playerTime = 0;
     this->cells = new Cell *[8];
@@ -65,7 +76,7 @@ bool verifyKill(Piece *piece, Piece *destPiece, int xPiecePosition, int yPiecePo
     return true;
 }
 
-void Board::movePiece(string piecePosition, string destinationPosition) {
+void Board::movePiece(string piecePosition, string destinationPosition, bool isVirtual = false) {
     if (piecePosition.length() != 2 || destinationPosition.length() != 2) {
         cout << "Invalid position" << endl;
         return;
@@ -177,6 +188,75 @@ void Board::movePiece(string piecePosition, string destinationPosition) {
             }
         }
     }
+//    if (piece->getName() == 'K') {
+//        if (destPiece != nullptr && destPiece->getName() == 'K') {
+//            cout << "You can't kill the enemy king" << endl;
+//            return;
+//        }
+//        // check if the king is two squares away from the enemy king
+//        for (int i = 0; i < 2; i++) {
+//            int x = xDestinationPosition + i + 1;
+//            int j = yDestinationPosition + i + 1;
+//            if (x <= 7 && x >= 0) {
+//                Piece *p = this->cells[x][yDestinationPosition].getPiece();
+//                if (p != nullptr && p->getName() == 'K' && p->getTeam() != piece->getTeam()) {
+//                    cout << "Your king should be two squares away from the enemy king" << endl;
+//                    return;
+//                }
+//            }
+//            if (j <= 7 && j >= 0) {
+//                Piece *p2 = this->cells[xDestinationPosition][j].getPiece();
+//                if (p2 != nullptr && p2->getName() == 'K' && p2->getTeam() != piece->getTeam()) {
+//                    cout << "Your king should be two squares away from the enemy king" << endl;
+//                    return;
+//                }
+//            }
+//
+//        }
+//        for (int i = 0; i < 2; i++) {
+//            int x = xDestinationPosition - i - 1;
+//            int j = yDestinationPosition - i - 1;
+//            if (x <= 7 && x >= 0) {
+//                Piece *p = this->cells[x][yDestinationPosition].getPiece();
+//                if (p != nullptr && p->getName() == 'K' && p->getTeam() != piece->getTeam()) {
+//                    cout << "Your king should be two squares away from the enemy king" << endl;
+//                    return;
+//                }
+//            }
+//            if (j <= 7 && j >= 0) {
+//                Piece *p2 = this->cells[xDestinationPosition][j].getPiece();
+//                if (p2 != nullptr && p2->getName() == 'K' && p2->getTeam() != piece->getTeam()) {
+//                    cout << "Your king should be two squares away from the enemy king" << endl;
+//                    return;
+//                }
+//            }
+//        }
+//    }
+
+    // check if the king is in check
+    if (!isVirtual) {
+        if (this->isKingInCheck(piece->getTeam())) {
+            auto *virtualBoard = new Board(*this);
+            virtualBoard->movePiece(piecePosition, destinationPosition, true);
+            if (virtualBoard->isKingInCheck(piece->getTeam())) {
+                cout << "You can't move that piece with king in check" << endl;
+                delete virtualBoard;
+                return;
+            }
+        } else {
+            auto *virtualBoard = new Board(*this);
+            virtualBoard->movePiece(piecePosition, destinationPosition, true);
+            if (virtualBoard->isKingInCheck(piece->getTeam())) {
+                cout << "You can't move a piece witch will put your king in check" << endl;
+                delete virtualBoard;
+                return;
+            }
+        }
+    }
+
+    // check if the king is in check after the move
+
+
     piece->incrementQuantMoves();
     this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
     this->cells[xPiecePosition][yPiecePosition].removePiece();
@@ -234,15 +314,40 @@ int Board::getTurn() {
 TotalPiece Board::getTotalPieces() {
     int totalWhitePieces = 0;
     int totalBlackPieces = 0;
-//    for(int i = 0; i < 8; i++) {
-//        for(int j = 0; j < 8; j++) {
-//            Cell *cell = this->cells[i]+j;
-//            if(cell->isOccupied && cell->getPiece()->getTeam() == 1) {
-//                totalWhitePieces++;
-//            }else if(cell->isOccupied && cell->getPiece()->getTeam() == 0) {
-//                totalBlackPieces++;
-//            }
-//        }
-//    }
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            Cell *cell = this->cells[i] + j;
+            if (cell->isOccupied && cell->getPiece()->getTeam() == 1) {
+                totalWhitePieces++;
+            } else if (cell->isOccupied && cell->getPiece()->getTeam() == 0) {
+                totalBlackPieces++;
+            }
+        }
+    }
     return {totalBlackPieces, totalWhitePieces};
+}
+
+bool Board::isKingInCheck(int team) {
+    int xKingPosition = 0;
+    int yKingPosition = 0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            Cell *cell = this->cells[i] + j;
+            if (cell->isOccupied && cell->getPiece()->getName() == 'K' && cell->getPiece()->getTeam() == team) {
+                xKingPosition = i;
+                yKingPosition = j;
+            }
+        }
+    }
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            Cell *cell = this->cells[i] + j;
+            if (cell->isOccupied && cell->getPiece()->getTeam() != team) {
+                if (cell->getPiece()->checkMove(i, j, xKingPosition, yKingPosition)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }

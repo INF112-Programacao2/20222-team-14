@@ -42,7 +42,7 @@ void BoardController::movePiece() {
     cin >> positions;
     string piecePosition = positions.substr(0, 2);
     string destPosition = positions.substr(2, 2);
-    board->movePiece(piecePosition, destPosition);
+    board->movePiece(piecePosition, destPosition,false);
 }
 
 void BoardController::checkPromotion() {

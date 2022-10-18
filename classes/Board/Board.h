@@ -18,14 +18,14 @@ class Board {
 private:
     Cell **cells;
     int playerTime;
-
+    Board(Board const &board);
 
 public:
     Board();
 
     ~Board();
 
-    void movePiece(string piecePosition, string destinationPosition);
+    void movePiece(string piecePosition, string destinationPosition,bool isVirtual);
 
     bool isGameOver();
 
@@ -36,6 +36,8 @@ public:
     TotalPiece getTotalPieces();
 
     void promotePiece(Piece *piece, int xDestinationPosition, int yDestinationPosition);
+
+    bool isKingInCheck(int team);
 };
 
 #endif //INC_20222_TEAM_14_Board_H
