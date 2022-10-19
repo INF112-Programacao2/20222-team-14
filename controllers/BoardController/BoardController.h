@@ -8,6 +8,7 @@ class BoardController {
 private:
     Board *board;
     bool inGame;
+    std::string position;
 public:
     BoardController();
 

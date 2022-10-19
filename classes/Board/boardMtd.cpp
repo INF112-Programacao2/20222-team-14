@@ -24,7 +24,7 @@ Board::Board() {
         for (int j = 0; j < 8; j++) {
             this->cells[i][j] = Cell();
             if (i == 1 || i == 6) {
-//                this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
+               this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
             }
 
             if (i == 0 || i == 7) {

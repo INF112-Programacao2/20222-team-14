@@ -1,6 +1,6 @@
 #include <iostream>
 #include "BoardController.h"
-
+#include "Connector.hpp"
 using namespace std;
 
 BoardController::BoardController() {
@@ -37,11 +37,20 @@ void BoardController::movePiece() {
     } else {
         cout << " - Black Pieces turn" << endl;
     }
-    cout << "Enter the positions: ";
-    string positions;
-    cin >> positions;
-    PieceIndex *piecePosition = Board::convertPosition(positions);
-    string res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
+    cout << "Enter the move: ";
+    ConnectToEngine("stockfish.exe"); 
+    string move;
+    cin >> move;
+    this->position += move + " ";
+    string str;
+     str = getNextMove(position); 
+    cout << str << endl;
+    CloseConnection();
+    PieceIndex *piecePosition = Board::convertPosition(move);
+    board->movePiece(piecePosition[0], piecePosition[1], false, false);
+    PieceIndex *piecePosition2 = Board::convertPosition(str);
+    string res =  board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
+   
     if (res != "S") {
         cout << res << endl;
     }
