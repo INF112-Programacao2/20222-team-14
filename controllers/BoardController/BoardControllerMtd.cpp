@@ -44,7 +44,8 @@ void BoardController::movePiece() {
     this->position += move + " ";
     string str;
      str = getNextMove(position); 
-    cout << "stockfish says" << str << endl;
+    this->position += str + " ";
+    cout << "stockfish says " << position << endl;
     CloseConnection();
     PieceIndex *piecePosition = Board::convertPosition(move);
     board->movePiece(piecePosition[0], piecePosition[1], false, false);
