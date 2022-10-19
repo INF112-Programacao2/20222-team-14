@@ -57,30 +57,27 @@ Board::~Board() {
     delete cells;
 }
 
-bool
+string
 verifyMove(Piece *piece, int xPiecePosition, int yPiecePosition, int xDestinationPosition, int yDestinationPosition) {
     if (!piece->checkMove(xPiecePosition, yPiecePosition, xDestinationPosition, yDestinationPosition)) {
-        cout << "Invalid move for that piece" << endl;
-        return false;
+        return "Invalid move for that piece";
     }
-    return true;
+    return "S";
 }
 
-bool verifyKill(Piece *piece, Piece *destPiece, int xPiecePosition, int yPiecePosition, int xDestinationPosition,
-                int yDestinationPosition) {
+string verifyKill(Piece *piece, Piece *destPiece, int xPiecePosition, int yPiecePosition, int xDestinationPosition,
+                  int yDestinationPosition) {
     if (!piece->canKill(*destPiece, xPiecePosition,
                         yPiecePosition, xDestinationPosition, yDestinationPosition)) {
-        cout << "You can't kill that piece" << endl;
-        return false;
+        return "You can't kill that piece";
     }
-    return true;
+    return "S";
 }
 
-void Board::movePiece(string piecePosition, string destinationPosition, bool isVirtual = false) {
-    if (piecePosition.length() != 2 || destinationPosition.length() != 2) {
-        cout << "Invalid position" << endl;
-        return;
-    }
+PieceIndex *Board::convertPosition(const string &positions) {
+    string piecePosition = positions.substr(0, 2);
+    string destPosition = positions.substr(2, 2);
+    PieceIndex *pieceIndex = new PieceIndex[2];
     int yPiecePosition = 0;
     int xPiecePosition = 0;
     int yDestinationPosition = 0;
@@ -88,25 +85,35 @@ void Board::movePiece(string piecePosition, string destinationPosition, bool isV
     try {
         yPiecePosition = (piecePosition[0] - 'a');
         xPiecePosition = 8 - stoi(piecePosition.substr(1, 1));
-        xDestinationPosition = 8 - stoi(destinationPosition.substr(1, 1));
-        yDestinationPosition = (destinationPosition[0] - 'a');
+        yDestinationPosition = (destPosition[0] - 'a');
+        xDestinationPosition = 8 - stoi(destPosition.substr(1, 1));
+        pieceIndex[0] = PieceIndex(xPiecePosition, yPiecePosition);
+        pieceIndex[1] = PieceIndex(xDestinationPosition, yDestinationPosition);
     } catch (exception e) {
-        cout << "Invalid position" << endl;
-        return;
+        pieceIndex[0] = PieceIndex(-1, -1);
+        pieceIndex[1] = PieceIndex(-1, -1);
     }
+    return pieceIndex;
+}
 
+string
+Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool isVirtual = false,
+                 bool justCheck = false) {
+
+    int xPiecePosition = piecePosition.getXPosition();
+    int yPiecePosition = piecePosition.getYPosition();
+    int xDestinationPosition = destinationPosition.getXPosition();
+    int yDestinationPosition = destinationPosition.getYPosition();
 //    cout << xPiecePosition << " " << yPiecePosition << " " << xDestinationPosition << " " << yDestinationPosition << endl;
 
     if (xPiecePosition < 0 || xPiecePosition > 7 || yPiecePosition < 0 || yPiecePosition > 7 ||
         xDestinationPosition < 0 || xDestinationPosition > 7 || yDestinationPosition < 0 || yDestinationPosition > 7) {
-        cout << "Invalid position" << endl;
-        return;
+        return "Invalid position";
     }
 
     bool isOccupied = this->cells[xPiecePosition][yPiecePosition].isOccupied;
     if (!isOccupied) {
-        cout << "There is no piece in this position" << endl;
-        return;
+        return "There is no piece in this position";
     }
 
     Piece *piece = this->cells[xPiecePosition][yPiecePosition].getPiece();
@@ -115,43 +122,41 @@ void Board::movePiece(string piecePosition, string destinationPosition, bool isV
         destPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
     }
     if (this->getTurn() != piece->getTeam()) {
-        cout << "You are trying to move a enemy piece" << endl;
-        return;
+        return "You are trying to move a enemy piece";
     }
 
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         Piece *dPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
         if (dPiece != nullptr && piece->getTeam() == dPiece->getTeam()) {
-            cout << "You can't kill your own piece" << endl;
-            return;
+            return "You can't kill your own piece";
         }
     }
+    string res = verifyMove(piece, xPiecePosition, yPiecePosition, xDestinationPosition, yDestinationPosition);
     if (destPiece != nullptr) {
+        string killRes = verifyKill(piece, destPiece, xPiecePosition, yPiecePosition, xDestinationPosition,
+                                    yDestinationPosition);
         if (destPiece->getName() != 'P') {
-            if (verifyMove(piece, xPiecePosition, yPiecePosition, xDestinationPosition, yDestinationPosition)) {
-                if (!verifyKill(piece, destPiece, xPiecePosition, yPiecePosition, xDestinationPosition,
-                                yDestinationPosition)) {
-                    return;
+            if (res == "S") {
+                if (killRes != "S") {
+                    return killRes;
                 }
             } else {
-                return;
+                return res;
             }
         } else {
-            if (!verifyKill(piece, destPiece, xPiecePosition, yPiecePosition, xDestinationPosition,
-                            yDestinationPosition)) {
-                return;
+            if (killRes != "S") {
+                return killRes;
             }
         }
     } else {
-        if (!verifyMove(piece, xPiecePosition, yPiecePosition, xDestinationPosition, yDestinationPosition)) {
-            return;
+        if (res != "S") {
+            return res;
         }
     }
 
 
     if (xPiecePosition == xDestinationPosition && yPiecePosition == yDestinationPosition) {
-        cout << "You can't move to the same position" << endl;
-        return;
+        return "You can't move to the same position";
     }
 
     if (piece->getName() != 'K') {
@@ -159,8 +164,7 @@ void Board::movePiece(string piecePosition, string destinationPosition, bool isV
             for (int i = min(yPiecePosition, yDestinationPosition) + 1;
                  i < max(yPiecePosition, yDestinationPosition); i++) {
                 if (this->cells[xPiecePosition][i].isOccupied) {
-                    cout << "There is a piece in the ways" << endl;
-                    return;
+                    return "There is a piece in the ways";
                 }
             }
         }
@@ -170,8 +174,7 @@ void Board::movePiece(string piecePosition, string destinationPosition, bool isV
                  i < max(xPiecePosition, xDestinationPosition); i++) {
                 cout << i << " --- " << max(xPiecePosition, xDestinationPosition) << endl;
                 if (this->cells[i][yPiecePosition].isOccupied) {
-                    cout << "There is a piece in the way" << endl;
-                    return;
+                    return "There is a piece in the way";
                 }
             }
         }
@@ -182,56 +185,11 @@ void Board::movePiece(string piecePosition, string destinationPosition, bool isV
                 int s = xPiecePosition + yPiecePosition;
                 int j = abs(i - s);
                 if (this->cells[i][j].isOccupied) {
-                    cout << "There is a piece in the way" << endl;
-                    return;
+                    return "There is a piece in the way";
                 }
             }
         }
     }
-//    if (piece->getName() == 'K') {
-//        if (destPiece != nullptr && destPiece->getName() == 'K') {
-//            cout << "You can't kill the enemy king" << endl;
-//            return;
-//        }
-//        // check if the king is two squares away from the enemy king
-//        for (int i = 0; i < 2; i++) {
-//            int x = xDestinationPosition + i + 1;
-//            int j = yDestinationPosition + i + 1;
-//            if (x <= 7 && x >= 0) {
-//                Piece *p = this->cells[x][yDestinationPosition].getPiece();
-//                if (p != nullptr && p->getName() == 'K' && p->getTeam() != piece->getTeam()) {
-//                    cout << "Your king should be two squares away from the enemy king" << endl;
-//                    return;
-//                }
-//            }
-//            if (j <= 7 && j >= 0) {
-//                Piece *p2 = this->cells[xDestinationPosition][j].getPiece();
-//                if (p2 != nullptr && p2->getName() == 'K' && p2->getTeam() != piece->getTeam()) {
-//                    cout << "Your king should be two squares away from the enemy king" << endl;
-//                    return;
-//                }
-//            }
-//
-//        }
-//        for (int i = 0; i < 2; i++) {
-//            int x = xDestinationPosition - i - 1;
-//            int j = yDestinationPosition - i - 1;
-//            if (x <= 7 && x >= 0) {
-//                Piece *p = this->cells[x][yDestinationPosition].getPiece();
-//                if (p != nullptr && p->getName() == 'K' && p->getTeam() != piece->getTeam()) {
-//                    cout << "Your king should be two squares away from the enemy king" << endl;
-//                    return;
-//                }
-//            }
-//            if (j <= 7 && j >= 0) {
-//                Piece *p2 = this->cells[xDestinationPosition][j].getPiece();
-//                if (p2 != nullptr && p2->getName() == 'K' && p2->getTeam() != piece->getTeam()) {
-//                    cout << "Your king should be two squares away from the enemy king" << endl;
-//                    return;
-//                }
-//            }
-//        }
-//    }
 
     // check if the king is in check
     // check if the king is in check after the move
@@ -239,19 +197,17 @@ void Board::movePiece(string piecePosition, string destinationPosition, bool isV
     if (!isVirtual) {
         if (this->isKingInCheck(piece->getTeam())) {
             auto *virtualBoard = new Board(*this);
-            virtualBoard->movePiece(piecePosition, destinationPosition, true);
+            virtualBoard->movePiece(piecePosition, destinationPosition, true, false);
             if (virtualBoard->isKingInCheck(piece->getTeam())) {
-                cout << "You can't move that piece with king in check" << endl;
                 delete virtualBoard;
-                return;
+                return "You can't move that piece with king in check";
             }
         } else {
             auto *virtualBoard = new Board(*this);
-            virtualBoard->movePiece(piecePosition, destinationPosition, true);
+            virtualBoard->movePiece(piecePosition, destinationPosition, true, false);
             if (virtualBoard->isKingInCheck(piece->getTeam())) {
-                cout << "You can't move a piece witch will put your king in check" << endl;
                 delete virtualBoard;
-                return;
+                return "You can't move a piece witch will put your king in check";
             }
         }
     }
@@ -262,16 +218,16 @@ void Board::movePiece(string piecePosition, string destinationPosition, bool isV
 //        return;
 //    }
 
-
-    piece->incrementQuantMoves();
-    this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
-    this->cells[xPiecePosition][yPiecePosition].removePiece();
-    cout << "Moved " << piece->getQuantMoves() << endl;
-    this->playerTime = this->playerTime == 1 ? 0 : 1;
-    if (piece->checkPromotion(xDestinationPosition, yDestinationPosition)) {
-        this->promotePiece(piece, xDestinationPosition, yDestinationPosition);
+    if (!justCheck) {
+        piece->incrementQuantMoves();
+        this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
+        this->cells[xPiecePosition][yPiecePosition].removePiece();
+        this->playerTime = this->playerTime == 1 ? 0 : 1;
+        if (piece->checkPromotion(xDestinationPosition, yDestinationPosition)) {
+            this->promotePiece(piece, xDestinationPosition, yDestinationPosition);
+        }
     }
-
+    return "S";
 }
 
 void Board::promotePiece(Piece *piece, int xDestinationPosition, int yDestinationPosition) {
@@ -349,7 +305,10 @@ bool Board::isKingInCheck(int team) {
         for (int j = 0; j < 8; j++) {
             Cell *cell = this->cells[i] + j;
             if (cell->isOccupied && cell->getPiece()->getTeam() != team) {
-                if (cell->getPiece()->checkMove(i, j, xKingPosition, yKingPosition)) {
+                PieceIndex pieceIndex = {i, j};
+                PieceIndex kingIndex = {xKingPosition, yKingPosition};
+                if (this->movePiece(pieceIndex, kingIndex, true, true) == "S" &&
+                    cell->getPiece()->checkMove(i, j, xKingPosition, yKingPosition)) {
                     return true;
                 }
             }

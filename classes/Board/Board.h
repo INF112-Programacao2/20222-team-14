@@ -10,6 +10,7 @@
 #include "../Queen/Queen.h"
 #include "../Bishop/Bishop.h"
 #include "../Pawn/Pawn.h"
+#include "../PieceIndex/PieceIndex.h"
 #include <string>
 
 using namespace std;
@@ -25,7 +26,7 @@ public:
 
     ~Board();
 
-    void movePiece(string piecePosition, string destinationPosition,bool isVirtual);
+    string movePiece(PieceIndex piecePosition, PieceIndex destinationPosition,bool isVirtual,bool justCheck);
 
     bool isGameOver();
 
@@ -40,6 +41,8 @@ public:
     bool isKingInCheck(int team);
 
     bool isKingInCheckMate(int team);
+
+    static PieceIndex * convertPosition(const string& piecePosition);
 };
 
 #endif //INC_20222_TEAM_14_Board_H

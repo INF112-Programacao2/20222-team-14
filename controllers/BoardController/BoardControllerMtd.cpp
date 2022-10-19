@@ -40,9 +40,11 @@ void BoardController::movePiece() {
     cout << "Enter the positions: ";
     string positions;
     cin >> positions;
-    string piecePosition = positions.substr(0, 2);
-    string destPosition = positions.substr(2, 2);
-    board->movePiece(piecePosition, destPosition,false);
+    PieceIndex *piecePosition = Board::convertPosition(positions);
+    string res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
+    if (res != "S") {
+        cout << res << endl;
+    }
 }
 
 void BoardController::checkPromotion() {

@@ -13,6 +13,7 @@ include_directories(classes/Pawn)
 include_directories(classes/Queen)
 include_directories(classes/Cell)
 include_directories(classes/Bishop)
+include_directories(classes/PieceIndex)
 include_directories(controllers/BoardController)
 
 add_executable(20222_team_14
@@ -36,6 +37,8 @@ add_executable(20222_team_14
         classes/Piece/pieceMtd.cpp
         classes/Piece/TotalPiece.h
         classes/Piece/totalPieceMtd.cpp
+        classes/PieceIndex/PieceIndex.h
+        classes/PieceIndex/pieceIndexMtd.cpp
         controllers/BoardController/BoardController.h
         controllers/BoardController/BoardControllerMtd.cpp
         main.cpp)
