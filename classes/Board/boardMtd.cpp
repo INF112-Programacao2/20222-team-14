@@ -24,7 +24,7 @@ Board::Board() {
         for (int j = 0; j < 8; j++) {
             this->cells[i][j] = Cell();
             if (i == 1 || i == 6) {
-                this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
+//                this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
             }
 
             if (i == 0 || i == 7) {
@@ -121,7 +121,7 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         destPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
     }
-    if (this->getTurn() != piece->getTeam()) {
+    if (this->getTurn() != piece->getTeam() && !justCheck) {
         return "You are trying to move a enemy piece";
     }
 
