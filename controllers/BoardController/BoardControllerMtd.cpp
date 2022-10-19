@@ -38,19 +38,23 @@ void BoardController::movePiece() {
         cout << " - Black Pieces turn" << endl;
     }
     cout << "Enter the move: ";
-    ConnectToEngine("stockfish.exe"); 
+    
     string move;
     cin >> move;
-    this->position += move + " ";
+    PieceIndex *piecePosition = Board::convertPosition(move);
+    string res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
+    if (res == "S") 
+         this->position += move + " ";
+
     string str;
-     str = getNextMove(position); 
-    this->position += str + " ";
+    ConnectToEngine("stockfish.exe"); 
+    str = getNextMove(position); 
     cout << "stockfish says " << position << endl;
     CloseConnection();
-    PieceIndex *piecePosition = Board::convertPosition(move);
-    board->movePiece(piecePosition[0], piecePosition[1], false, false);
     PieceIndex *piecePosition2 = Board::convertPosition(str);
-    string res =  board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
+     res =  board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
+    if (res == "S") 
+         this->position += str + " ";
    
     if (res != "S") {
         cout << res << endl;
