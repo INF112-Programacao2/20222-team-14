@@ -37,7 +37,9 @@ public:
 
     TotalPiece getTotalPieces();
 
-    void promotePiece(Piece *piece, int xDestinationPosition, int yDestinationPosition);
+    PieceIndex checkPromotion();
+
+    void promotePiece(Piece *piece, PieceIndex pieceIndex);
 
     bool isKingInCheck(int team);
 

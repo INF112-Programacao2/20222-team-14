@@ -58,17 +58,52 @@ void BoardController::movePiece() {
         cin >> move;
         PieceIndex *piecePosition = Board::convertPosition(move);
         string res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
-        if (res == "S")
+        if (res == "S" || res == "P")
             this->position += move + " ";
         else
             cout << res << endl;
+
+        if (res == "P")
+            this->checkPromotion();
     }
 
 
 }
 
 void BoardController::checkPromotion() {
+    PieceIndex pieceIndex = this->board->checkPromotion();
+    if (pieceIndex.getXPosition() != -1) {
+        char pieceName;
+        Piece *piece;
+        do {
+            cout << "Promote your piece to: " << endl;
+            cout << "1 - Queen" << endl;
+            cout << "2 - Rook" << endl;
+            cout << "3 - Bishop" << endl;
+            cout << "4 - Knight" << endl;
+            int team = this->board->getTurn() == 0 ? 1 : 0;
+            cin >> pieceName;
+            switch (pieceName) {
+                case '1':
+                    piece = new Queen('Q', team);
+                    break;
+                case '2':
+                    piece = new Rook('R', team);
+                    break;
+                case '3':
+                    piece = new Bishop('B', team);
+                    break;
+                case '4':
+                    piece = new Knight('K', team);
+                    break;
+                default:
+                    cout << "Invalid option" << endl;
+                    return;
+            }
+        } while (pieceName != '1' && pieceName != '2' && pieceName != '3' && pieceName != '4');
+        this->board->promotePiece(piece, pieceIndex);
 
+    }
 }
 
 

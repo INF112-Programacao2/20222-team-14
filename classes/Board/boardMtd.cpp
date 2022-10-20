@@ -24,25 +24,25 @@ Board::Board() {
         for (int j = 0; j < 8; j++) {
             this->cells[i][j] = Cell();
             if (i == 1 || i == 6) {
-               this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
+                this->cells[i][j].setPiece(new Pawn('P', i == 1 ? 1 : 0));
             }
 
             if (i == 0 || i == 7) {
                 switch (j) {
                     case 0:
                     case 7:
-                        this->cells[i][j].setPiece(new Rook('R', i == 0 ? 1 : 0));
+//                        this->cells[i][j].setPiece(new Rook('R', i == 0 ? 1 : 0));
                         break;
                     case 1:
                     case 6:
-                        this->cells[i][j].setPiece(new Knight('N', i == 0 ? 1 : 0));
+//                        this->cells[i][j].setPiece(new Knight('N', i == 0 ? 1 : 0));
                         break;
                     case 2:
                     case 5:
-                        this->cells[i][j].setPiece(new Bishop('B', i == 0 ? 1 : 0));
+//                        this->cells[i][j].setPiece(new Bishop('B', i == 0 ? 1 : 0));
                         break;
                     case 3:
-                        this->cells[i][j].setPiece(new Queen('Q', i == 0 ? 1 : 0));
+//                        this->cells[i][j].setPiece(new Queen('Q', i == 0 ? 1 : 0));
                         break;
                     case 4:
                         this->cells[i][j].setPiece(new King('K', i == 0 ? 1 : 0));
@@ -104,7 +104,6 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
     int yPiecePosition = piecePosition.getYPosition();
     int xDestinationPosition = destinationPosition.getXPosition();
     int yDestinationPosition = destinationPosition.getYPosition();
-//    cout << xPiecePosition << " " << yPiecePosition << " " << xDestinationPosition << " " << yDestinationPosition << endl;
 
     if (xPiecePosition < 0 || xPiecePosition > 7 || yPiecePosition < 0 || yPiecePosition > 7 ||
         xDestinationPosition < 0 || xDestinationPosition > 7 || yDestinationPosition < 0 || yDestinationPosition > 7) {
@@ -172,7 +171,6 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
         if (yPiecePosition == yDestinationPosition) {
             for (int i = min(xPiecePosition, xDestinationPosition) + 1;
                  i < max(xPiecePosition, xDestinationPosition); i++) {
-                cout << i << " --- " << max(xPiecePosition, xDestinationPosition) << endl;
                 if (this->cells[i][yPiecePosition].isOccupied) {
                     return "There is a piece in the way";
                 }
@@ -180,7 +178,8 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
         }
 
         if (abs(yPiecePosition - yDestinationPosition) == abs(xPiecePosition - xDestinationPosition)) {
-            for (int i = min(xPiecePosition, xDestinationPosition) + 1; i < max(xPiecePosition, xDestinationPosition); i++) {
+            for (int i = min(xPiecePosition, xDestinationPosition) + 1;
+                 i < max(xPiecePosition, xDestinationPosition); i++) {
                 int s = xPiecePosition + yPiecePosition;
                 int j = abs(i - s);
                 if (this->cells[i][j].isOccupied) {
@@ -199,7 +198,7 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
             virtualBoard->movePiece(piecePosition, destinationPosition, true, false);
             if (virtualBoard->isKingInCheck(piece->getTeam())) {
                 delete virtualBoard;
-                return "You can't move that piece with king in check";
+                return "You can't do that moviment with king in check";
             }
         } else {
             auto *virtualBoard = new Board(*this);
@@ -213,8 +212,7 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
 
     //check if the king is in check mate
 //    if (this->isKingInCheckMate(piece->getTeam())) {
-//        cout << "You are in check mate" << endl;
-//        return;
+//        return << "You are in check mate" << endl;
 //    }
 
     if (!justCheck) {
@@ -223,40 +221,29 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
         this->cells[xPiecePosition][yPiecePosition].removePiece();
         this->playerTime = this->playerTime == 1 ? 0 : 1;
         if (piece->checkPromotion(xDestinationPosition, yDestinationPosition)) {
-            this->promotePiece(piece, xDestinationPosition, yDestinationPosition);
+            return "P";
         }
     }
     return "S";
 }
 
-void Board::promotePiece(Piece *piece, int xDestinationPosition, int yDestinationPosition) {
-    char pieceName;
-    do {
-        cout << "Promote your piece to: " << endl;
-        cout << "1 - Queen" << endl;
-        cout << "2 - Rook" << endl;
-        cout << "3 - Bishop" << endl;
-        cout << "4 - Knight" << endl;
-        cin >> pieceName;
-        switch (pieceName) {
-            case '1':
-                piece = new Queen('Q', piece->getTeam());
-                break;
-            case '2':
-                piece = new Rook('R', piece->getTeam());
-                break;
-            case '3':
-                piece = new Bishop('B', piece->getTeam());
-                break;
-            case '4':
-                piece = new Knight('K', piece->getTeam());
-                break;
-            default:
-                cout << "Invalid option" << endl;
-                return;
+PieceIndex Board::checkPromotion() {
+    PieceIndex pieceIndex;
+    int row = this->playerTime == 0 ? 7 : 0;
+    for (int i = 0; i < 8; i++) {
+        if (this->cells[row][i].isOccupied) {
+            Piece *piece = this->cells[row][i].getPiece();
+            if (piece->getName() == 'P' && piece->getTeam() != this->playerTime) {
+                pieceIndex = PieceIndex(0, i);
+                return pieceIndex;
+            }
         }
-    } while (pieceName != '1' && pieceName != '2' && pieceName != '3' && pieceName != '4');
-    this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
+    }
+    return pieceIndex;
+}
+
+void Board::promotePiece(Piece *piece, PieceIndex pieceIndex) {
+    this->cells[pieceIndex.getXPosition()][pieceIndex.getYPosition()].setPiece(piece);
 }
 
 bool Board::isGameOver() {
