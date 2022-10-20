@@ -39,26 +39,34 @@ void BoardController::movePiece() {
     }
     cout << "Enter the move: ";
     
-    string move;
-    cin >> move;
-    PieceIndex *piecePosition = Board::convertPosition(move);
-    string res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
-    if (res == "S") 
-         this->position += move + " ";
 
-    string str;
-    ConnectToEngine("stockfish.exe"); 
-    str = getNextMove(position); 
-    cout << "stockfish says " << position << endl;
-    CloseConnection();
-    PieceIndex *piecePosition2 = Board::convertPosition(str);
-     res =  board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
-    if (res == "S") 
+
+    if(board->getTurn() != 0) {
+        string str;
+        ConnectToEngine("stockfish.exe"); 
+        str = getNextMove(position); 
+        cout << "stockfish says " << position << endl;
+        CloseConnection();
+        PieceIndex *piecePosition2 = Board::convertPosition(str);
+        string res =  board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
+         if (res == "S") 
          this->position += str + " ";
-   
-    if (res != "S") {
-        cout << res << endl;
+         else 
+         cout <<res<<endl;
+    }else {
+        string move;
+        cin >> move;
+        PieceIndex *piecePosition = Board::convertPosition(move);
+        string res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
+        if (res == "S") 
+            this->position += move + " ";
+        else 
+            cout << res << endl;
     }
+
+    
+   
+
 }
 
 void BoardController::checkPromotion() {

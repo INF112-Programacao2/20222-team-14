@@ -180,8 +180,7 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
         }
 
         if (abs(yPiecePosition - yDestinationPosition) == abs(xPiecePosition - xDestinationPosition)) {
-            for (int i = min(xPiecePosition, xDestinationPosition) + 1;
-                 i < max(xPiecePosition, xDestinationPosition); i++) {
+            for (int i = min(xPiecePosition, xDestinationPosition) + 1; i < max(xPiecePosition, xDestinationPosition); i++) {
                 int s = xPiecePosition + yPiecePosition;
                 int j = abs(i - s);
                 if (this->cells[i][j].isOccupied) {
