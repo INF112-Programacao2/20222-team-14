@@ -350,3 +350,11 @@ bool Board::isKingInCheckMate(int team) {
 //    }
     return true;
 }
+
+bool Board::getPlayWithEngin() {
+    return playWithEngin;
+}
+
+void Board::setPlayWithEngin(bool nPlayWithEngin) {
+    this->playWithEngin = nPlayWithEngin;
+}

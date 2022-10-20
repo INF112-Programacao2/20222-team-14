@@ -1,6 +1,7 @@
 #include <iostream>
 #include "BoardController.h"
 #include "Connector.hpp"
+
 using namespace std;
 
 BoardController::BoardController() {
@@ -38,34 +39,31 @@ void BoardController::movePiece() {
         cout << " - Black Pieces turn" << endl;
     }
     cout << "Enter the move: ";
-    
 
 
-    if(board->getTurn() != 0) {
+    if (board->getTurn() != 0 && board->getPlayWithEngin()) {
         string str;
-        ConnectToEngine("stockfish.exe"); 
-        str = getNextMove(position); 
+        ConnectToEngine("stockfish.exe");
+        str = getNextMove(position);
         cout << "stockfish says " << position << endl;
         CloseConnection();
         PieceIndex *piecePosition2 = Board::convertPosition(str);
-        string res =  board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
-         if (res == "S") 
-         this->position += str + " ";
-         else 
-         cout <<res<<endl;
-    }else {
+        string res = board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
+        if (res == "S")
+            this->position += str + " ";
+        else
+            cout << res << endl;
+    } else {
         string move;
         cin >> move;
         PieceIndex *piecePosition = Board::convertPosition(move);
         string res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
-        if (res == "S") 
+        if (res == "S")
             this->position += move + " ";
-        else 
+        else
             cout << res << endl;
     }
 
-    
-   
 
 }
 
@@ -81,6 +79,10 @@ void BoardController::endGame() {
 }
 
 void BoardController::startGame() {
+    cout << "Do you want to play with the engin? (y/n): ";
+    char playWithEngin;
+    cin >> playWithEngin;
+    board->setPlayWithEngin(playWithEngin == 'y');
     do {
         cout << "----------------------------------" << endl;
         drawBoard();

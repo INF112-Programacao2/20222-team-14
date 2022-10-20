@@ -19,6 +19,7 @@ class Board {
 private:
     Cell **cells;
     int playerTime;
+    bool playWithEngin;
     Board(Board const &board);
 
 public:
@@ -43,6 +44,9 @@ public:
     bool isKingInCheckMate(int team);
 
     static PieceIndex * convertPosition(const string& piecePosition);
+
+    bool getPlayWithEngin();
+    void setPlayWithEngin(bool nPlayWithEngin);
 };
 
 #endif //INC_20222_TEAM_14_Board_H

@@ -4,6 +4,7 @@
 using namespace std;
 
 int main() {
+    cout << "Welcome to Chess" << endl;
     bool newGame = true;
     BoardController *boardController;
     while (newGame) {
