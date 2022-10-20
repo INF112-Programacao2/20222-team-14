@@ -110,6 +110,10 @@ void BoardController::checkPromotion() {
 void BoardController::endGame() {
     this->inGame = false;
     cout << "Game ended" << endl;
+    if (this->board->getTurn() == 0)
+        cout << "Black team won" << endl;
+    else
+        cout << "White team won" << endl;
     delete board;
 }
 
@@ -119,12 +123,16 @@ void BoardController::startGame() {
     cin >> playWithEngin;
     board->setPlayWithEngin(playWithEngin == 'y');
     do {
+        if (board->isKingInCheckMate()) {
+            cout << "Check Mate" << endl;
+            endGame();
+            break;
+        }
         cout << "----------------------------------" << endl;
         drawBoard();
         cout << "----------------------------------" << endl;
         showStatus();
         movePiece();
-
     } while (!board->isGameOver());
 }
 

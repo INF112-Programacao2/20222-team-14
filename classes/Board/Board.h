@@ -43,7 +43,7 @@ public:
 
     bool isKingInCheck(int team);
 
-    bool isKingInCheckMate(int team);
+    bool isKingInCheckMate();
 
     static PieceIndex * convertPosition(const string& piecePosition);
 

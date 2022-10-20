@@ -19,9 +19,9 @@ bool Pawn::checkMove(int xPosition, int yPosition, int xDest, int yDest) {
         bDestRange = xPosition - 2;
     }
     if (yPosition == yDest) {
-        if (this->getTeam() == 1 && xDest <= wDestRange) {
+        if (this->getTeam() == 1 && xDest <= wDestRange && xDest > xPosition) {
             return true;
-        } else if (this->getTeam() == 0 && xDest >= bDestRange) {
+        } else if (this->getTeam() == 0 && xDest >= bDestRange && xDest < xPosition) {
             return true;
         }
     }
