@@ -2,7 +2,7 @@
 #define CONNECTOR_H
 
 #include <windows.h>
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <string>
 
@@ -76,4 +76,4 @@ void CloseConnection(){
 }
 
 
-#endif CONNECTOR_H
+#endif //CONNECTOR_H
