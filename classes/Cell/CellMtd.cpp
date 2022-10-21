@@ -1,4 +1,5 @@
 #include "Cell.h"
+
 Cell::Cell() {
     this->piece = nullptr;
     this->isOccupied = false;

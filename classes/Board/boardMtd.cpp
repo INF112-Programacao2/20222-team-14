@@ -1,19 +1,34 @@
 #include "Board.h"
-#include <iostream>
 #include <string>
 #include <cstdlib>
 
 using namespace std;
 
-Board::Board(Board const &board) {
+Board::Board(Board *board) {
     this->cells = new Cell *[8];
     for (int i = 0; i < 8; i++) {
         this->cells[i] = new Cell[8];
         for (int j = 0; j < 8; j++) {
-            this->cells[i][j] = board.cells[i][j];
+            this->cells[i][j] = Cell();
+            if (board->getCell(i, j)->isOccupied) {
+                int team = board->getCell(i, j)->getPiece()->getTeam();
+                if (board->getCell(i, j)->getPiece()->getName() == 'K') {
+                    this->cells[i][j].setPiece(new King('K', team));
+                } else if (board->getCell(i, j)->getPiece()->getName() == 'Q') {
+                    this->cells[i][j].setPiece(new Queen('Q', team));
+                } else if (board->getCell(i, j)->getPiece()->getName() == 'R') {
+                    this->cells[i][j].setPiece(new Rook('R', team));
+                } else if (board->getCell(i, j)->getPiece()->getName() == 'B') {
+                    this->cells[i][j].setPiece(new Bishop('B', team));
+                } else if (board->getCell(i, j)->getPiece()->getName() == 'N') {
+                    this->cells[i][j].setPiece(new Knight('N', team));
+                } else if (board->getCell(i, j)->getPiece()->getName() == 'P') {
+                    this->cells[i][j].setPiece(new Pawn('P', team));
+                }
+            }
         }
     }
-    this->playerTime = board.playerTime;
+    this->playerTime = board->playerTime;
 }
 
 Board::Board() {
@@ -178,11 +193,14 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
         }
 
         if (abs(yPiecePosition - yDestinationPosition) == abs(xPiecePosition - xDestinationPosition)) {
-            for (int i = min(xPiecePosition, xDestinationPosition) + 1;
-                 i < max(xPiecePosition, xDestinationPosition); i++) {
-                int s = xPiecePosition + yPiecePosition;
-                int j = abs(i - s);
-                if (this->cells[i][j].isOccupied) {
+            int x = xPiecePosition;
+            int y = yPiecePosition;
+            int xInc = xPiecePosition < xDestinationPosition ? 1 : -1;
+            int yInc = yPiecePosition < yDestinationPosition ? 1 : -1;
+            while (x != xDestinationPosition && y != yDestinationPosition) {
+                x += xInc;
+                y += yInc;
+                if (this->cells[x][y].isOccupied && x != xDestinationPosition && y != yDestinationPosition) {
                     return "There is a piece in the way";
                 }
             }
@@ -200,14 +218,14 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
 //            }
 //        }
         if (this->isKingInCheck(piece->getTeam())) {
-            auto *virtualBoard = new Board(*this);
+            auto *virtualBoard = new Board(this);
             virtualBoard->movePiece(piecePosition, destinationPosition, true, false);
             if (virtualBoard->isKingInCheck(piece->getTeam())) {
                 delete virtualBoard;
                 return "You can't do that moviment with king in check";
             }
         } else {
-            auto *virtualBoard = new Board(*this);
+            auto *virtualBoard = new Board(this);
             virtualBoard->movePiece(piecePosition, destinationPosition, true, false);
             if (virtualBoard->isKingInCheck(piece->getTeam())) {
                 delete virtualBoard;
@@ -294,8 +312,7 @@ bool Board::isKingInCheck(int team) {
             if (cell->isOccupied && cell->getPiece()->getTeam() != team) {
                 PieceIndex pieceIndex = {i, j};
                 PieceIndex kingIndex = {xKingPosition, yKingPosition};
-                if (this->movePiece(pieceIndex, kingIndex, true, true) == "S" &&
-                    cell->getPiece()->checkMove(i, j, xKingPosition, yKingPosition)) {
+                if (this->movePiece(pieceIndex, kingIndex, true, true) == "S") {
                     return true;
                 }
             }
@@ -324,7 +341,7 @@ bool Board::isKingInCheckMate() {
                 for (int k = 0; k < 8; k++) {
                     for (int l = 0; l < 8; l++) {
                         if (cell->getPiece()->checkMove(i, j, k, l)) {
-                            auto *virtualBoard = new Board(*this);
+                            auto *virtualBoard = new Board(this);
                             virtualBoard->movePiece({i, j}, {k, l}, true, false);
                             if (!virtualBoard->isKingInCheck(team)) {
                                 delete virtualBoard;
@@ -356,7 +373,7 @@ string Board::castling(string castlingType) {
             !this->getCell(row, 5)->isOccupied &&
             !this->getCell(row, 6)->isOccupied) {
             Board *virtualthis = new Board(*this);
-            for(int i = 4; i < 7; i++) {
+            for (int i = 4; i < 7; i++) {
                 if (virtualthis->isKingInCheck(this->getTurn())) {
                     delete virtualthis;
                     return "You can't castling with your king in check";
@@ -376,7 +393,7 @@ string Board::castling(string castlingType) {
             !this->getCell(row, 2)->isOccupied &&
             !this->getCell(row, 3)->isOccupied) {
             Board *virtualthis = new Board(*this);
-            for(int i = 4; i > 1; i--) {
+            for (int i = 4; i > 1; i--) {
                 if (virtualthis->isKingInCheck(this->getTurn())) {
                     delete virtualthis;
                     return "You can't castling with your king in check";

@@ -46,7 +46,7 @@ void BoardController::movePiece() {
         string str;
         ConnectToEngine("stockfish.exe");
         str = getNextMove(position);
-        cout << "stockfish says " << position << endl;
+        cout << "stockfish says " << str << endl;
         CloseConnection();
         string res;
         if (str == "0-0" || str == "0-0-0") {
@@ -134,16 +134,16 @@ void BoardController::startGame() {
     cin >> playWithEngin;
     board->setPlayWithEngin(playWithEngin == 'y');
     do {
-        if (board->isKingInCheckMate()) {
-            cout << "Check Mate" << endl;
-            endGame();
-            break;
-        }
         cout << "----------------------------------" << endl;
         drawBoard();
         cout << "----------------------------------" << endl;
         showStatus();
         movePiece();
+        if (board->isKingInCheckMate()) {
+            cout << "Check Mate" << endl;
+            endGame();
+            break;
+        }
     } while (!board->isGameOver());
 }
 

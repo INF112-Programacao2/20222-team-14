@@ -14,6 +14,7 @@ public:
 
     void setPiece(Piece *piece);
 
+
     void removePiece();
 
     Piece *getPiece();

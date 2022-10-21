@@ -19,8 +19,8 @@ class Board {
 private:
     Cell **cells;
     int playerTime;
-    bool playWithEngin;
-    Board(Board const &board);
+    bool playWithEngin{};
+    explicit Board(Board *board);
 
 public:
     Board();
