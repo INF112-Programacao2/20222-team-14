@@ -21,6 +21,7 @@ private:
     int playerTime;
     bool playWithEngin{};
     explicit Board(Board *board);
+    bool firstMove;
 
 public:
     Board();
@@ -49,6 +50,9 @@ public:
 
     bool getPlayWithEngin();
     void setPlayWithEngin(bool nPlayWithEngin);
+
+    bool getFirstMove();
+    void setFirstMove(bool nFirstMove);
 };
 
 #endif //INC_20222_TEAM_14_Board_H

@@ -33,6 +33,7 @@ Board::Board(Board *board) {
 
 Board::Board() {
     this->playerTime = 0;
+    this->firstMove = true;
     this->cells = new Cell *[8];
     for (int i = 0; i < 8; i++) {
         this->cells[i] = new Cell[8];
@@ -149,7 +150,7 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
     if (destPiece != nullptr) {
         string killRes = verifyKill(piece, destPiece, xPiecePosition, yPiecePosition, xDestinationPosition,
                                     yDestinationPosition);
-        if (destPiece->getName() != 'P') {
+        if (piece->getName() != 'P') {
             if (res == "S") {
                 if (killRes != "S") {
                     return killRes;
@@ -407,4 +408,12 @@ string Board::castling(string castlingType) {
     }
     return "Invalid castling";
 
+}
+
+bool Board::getFirstMove() {
+    return this->firstMove;
+}
+
+void Board::setFirstMove(bool nFirstMove) {
+    this->firstMove = nFirstMove;
 }

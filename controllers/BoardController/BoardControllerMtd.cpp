@@ -78,7 +78,7 @@ void BoardController::movePiece() {
             this->checkPromotion();
     }
 
-
+    this->board->setFirstMove(false);
 }
 
 void BoardController::checkPromotion() {
@@ -119,7 +119,6 @@ void BoardController::checkPromotion() {
 
 
 void BoardController::endGame() {
-    this->inGame = false;
     cout << "Game ended" << endl;
     if (this->board->getTurn() == 0)
         cout << "Black team won" << endl;
@@ -134,16 +133,16 @@ void BoardController::startGame() {
     cin >> playWithEngin;
     board->setPlayWithEngin(playWithEngin == 'y');
     do {
+        if (!board->getFirstMove() && board->isKingInCheckMate()) {
+            cout << "Check Mate" << endl;
+            endGame();
+            break;
+        }
         cout << "----------------------------------" << endl;
         drawBoard();
         cout << "----------------------------------" << endl;
         showStatus();
         movePiece();
-        if (board->isKingInCheckMate()) {
-            cout << "Check Mate" << endl;
-            endGame();
-            break;
-        }
     } while (!board->isGameOver());
 }
 
