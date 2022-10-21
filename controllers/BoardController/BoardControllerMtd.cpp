@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "BoardController.h"
 #include "Connector.hpp"
 
@@ -27,6 +28,7 @@ void BoardController::drawBoard() {
             }
         }
         cout << "   " << 8 - i;
+        //set cout to print the board
         cout << endl;
     }
     cout << "     a  b  c  d  e  f  g  h" << endl;
@@ -46,10 +48,11 @@ void BoardController::movePiece() {
         string str;
         ConnectToEngine("stockfish.exe");
         str = getNextMove(position);
-        cout << "stockfish says " << str << endl;
+        cout << "stockfish last move " << str << endl;
+        cout << "stockfish says " << position << endl;
         CloseConnection();
         string res;
-        if (str == "0-0" || str == "0-0-0") {
+        if (str == "0-0" || str == "0-0-0" || str=="e1g1" || str=="e1c1" || str=="e8g8" || str=="e8c8") {
             res = board->castling(str);
         } else {
             PieceIndex *piecePosition2 = Board::convertPosition(str);
