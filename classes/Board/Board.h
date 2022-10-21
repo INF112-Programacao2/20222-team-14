@@ -28,7 +28,7 @@ public:
     ~Board();
 
     string movePiece(PieceIndex piecePosition, PieceIndex destinationPosition,bool isVirtual,bool justCheck);
-
+    string castling(string clastlingType);
     bool isGameOver();
 
     Cell *getCell(int x, int y);

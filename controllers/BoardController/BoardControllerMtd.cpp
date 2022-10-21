@@ -26,13 +26,14 @@ void BoardController::drawBoard() {
                 cout << piece->getTeam() << piece->getName() << " ";
             }
         }
+        cout << "   " << 8 - i;
         cout << endl;
     }
     cout << "     a  b  c  d  e  f  g  h" << endl;
 }
 
 void BoardController::movePiece() {
-    cout << "Move piece";
+    cout << "Make your move" << endl;
     if (board->getTurn() == 0) {
         cout << " - White Pieces turn" << endl;
     } else {
@@ -47,8 +48,13 @@ void BoardController::movePiece() {
         str = getNextMove(position);
         cout << "stockfish says " << position << endl;
         CloseConnection();
-        PieceIndex *piecePosition2 = Board::convertPosition(str);
-        string res = board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
+        string res;
+        if (str == "0-0" || str == "0-0-0") {
+            res = board->castling(str);
+        } else {
+            PieceIndex *piecePosition2 = Board::convertPosition(str);
+            res = board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
+        }
         if (res == "S")
             this->position += str + " ";
         else
@@ -56,8 +62,13 @@ void BoardController::movePiece() {
     } else {
         string move;
         cin >> move;
-        PieceIndex *piecePosition = Board::convertPosition(move);
-        string res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
+        string res;
+        if (move == "0-0" || move == "0-0-0") {
+            res = board->castling(move);
+        } else {
+            PieceIndex *piecePosition = Board::convertPosition(move);
+            res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
+        }
         if (res == "S" || res == "P")
             this->position += move + " ";
         else

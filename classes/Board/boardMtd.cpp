@@ -31,18 +31,18 @@ Board::Board() {
                 switch (j) {
                     case 0:
                     case 7:
-//                        this->cells[i][j].setPiece(new Rook('R', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new Rook('R', i == 0 ? 1 : 0));
                         break;
                     case 1:
                     case 6:
-//                        this->cells[i][j].setPiece(new Knight('N', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new Knight('N', i == 0 ? 1 : 0));
                         break;
                     case 2:
                     case 5:
-//                        this->cells[i][j].setPiece(new Bishop('B', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new Bishop('B', i == 0 ? 1 : 0));
                         break;
                     case 3:
-//                        this->cells[i][j].setPiece(new Queen('Q', i == 0 ? 1 : 0));
+                        this->cells[i][j].setPiece(new Queen('Q', i == 0 ? 1 : 0));
                         break;
                     case 4:
                         this->cells[i][j].setPiece(new King('K', i == 0 ? 1 : 0));
@@ -346,4 +346,48 @@ bool Board::getPlayWithEngin() {
 
 void Board::setPlayWithEngin(bool nPlayWithEngin) {
     this->playWithEngin = nPlayWithEngin;
+}
+
+string Board::castling(string castlingType) {
+    if (castlingType == "O-O") {
+        int row = this->getTurn() == 0 ? 7 : 0;
+        if (this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
+            this->getCell(row, 7)->getPiece()->getQuantMoves() == 0 &&
+            !this->getCell(row, 5)->isOccupied &&
+            !this->getCell(row, 6)->isOccupied) {
+            Board *virtualthis = new Board(*this);
+            for(int i = 4; i < 7; i++) {
+                if (virtualthis->isKingInCheck(this->getTurn())) {
+                    delete virtualthis;
+                    return "You can't castling with your king in check";
+                }
+                virtualthis->movePiece({row, 4}, {row, i}, true, false);
+            }
+            this->movePiece({row, 4}, {row, 6}, false, false);
+            this->movePiece({row, 7}, {row, 5}, false, false);
+            return "S";
+        }
+    }
+    if (castlingType == "O-O-O") {
+        int row = this->getTurn() == 0 ? 7 : 0;
+        if (this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
+            this->getCell(row, 0)->getPiece()->getQuantMoves() == 0 &&
+            !this->getCell(row, 1)->isOccupied &&
+            !this->getCell(row, 2)->isOccupied &&
+            !this->getCell(row, 3)->isOccupied) {
+            Board *virtualthis = new Board(*this);
+            for(int i = 4; i > 1; i--) {
+                if (virtualthis->isKingInCheck(this->getTurn())) {
+                    delete virtualthis;
+                    return "You can't castling with your king in check";
+                }
+                virtualthis->movePiece({row, 4}, {row, i}, true, false);
+            }
+            this->movePiece({row, 4}, {row, 2}, false, false);
+            this->movePiece({row, 0}, {row, 3}, false, false);
+            return "S";
+        }
+    }
+    return "Invalid castling";
+
 }
