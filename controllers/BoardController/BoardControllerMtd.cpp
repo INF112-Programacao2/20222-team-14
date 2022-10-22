@@ -53,7 +53,7 @@ void BoardController::movePiece() {
         cin >> move;
     }
     move = this->handleMove(move);
-    if (move == "0-0" || move == "0-0-0") {
+    if (move == "e1g1" || move == "e8g8" || move == "e1c1" || move == "e8c8") {
         res = board->castling(move);
     } else {
         PieceIndex *piecePosition2 = Board::convertPosition(move);
@@ -72,10 +72,14 @@ void BoardController::movePiece() {
 }
 
 string BoardController::handleMove(string move) {
-    if (move == "e1g1" || move == "e8g8") {
-        move = "0-0";
-    } else if (move == "e1c1" || move == "e8c8") {
-        move = "0-0-0";
+    if(this->board->getTurn() ==0 && move == "0-0"){
+        move = "e1g1";
+    } else if(this->board->getTurn() ==0 && move == "0-0-0"){
+        move = "e1c1";
+    } else if(this->board->getTurn() ==1 && move == "0-0"){
+        move = "e8g8";
+    } else if(this->board->getTurn() ==1 && move == "0-0-0"){
+        move = "e8c8";
     }
     return move;
 }

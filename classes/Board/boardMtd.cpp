@@ -366,7 +366,7 @@ void Board::setPlayWithEngin(bool nPlayWithEngin) {
 }
 
 string Board::castling(const string &castlingType) {
-    if (castlingType == "0-0") {
+    if (castlingType == "e8g8" || castlingType == "e1g1") {
         int row = this->getTurn() == 0 ? 7 : 0;
         if (this->getCell(row, 4)->isOccupied && this->getCell(row, 7)->isOccupied &&
             this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
@@ -391,7 +391,7 @@ string Board::castling(const string &castlingType) {
             return "S";
         }
     }
-    if (castlingType == "0-0-0") {
+    if (castlingType == "e8c8" || castlingType == "e1c1") {
         int row = this->getTurn() == 0 ? 7 : 0;
         if (this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
             this->getCell(row, 0)->getPiece()->getQuantMoves() == 0 &&
