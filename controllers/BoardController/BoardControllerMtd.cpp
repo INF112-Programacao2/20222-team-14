@@ -53,9 +53,9 @@ void BoardController::movePiece() {
         CloseConnection();
         string res;
         if(str=="e1g1" || str=="e8g8"){
-            str="O-O";
+            str="0-0";
         }else if(str=="e1c1" || str=="e8c8"){
-            str="O-O-O";
+            str="0-0-0";
         }
         if (str == "0-0" || str == "0-0-0") {
             res = board->castling(str);

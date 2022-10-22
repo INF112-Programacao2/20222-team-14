@@ -239,7 +239,6 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
         piece->incrementQuantMoves();
         this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
         this->cells[xPiecePosition][yPiecePosition].removePiece();
-        this->playerTime = this->playerTime == 1 ? 0 : 1;
         if (piece->checkPromotion(xDestinationPosition, yDestinationPosition)) {
             return "P";
         }
@@ -367,7 +366,7 @@ void Board::setPlayWithEngin(bool nPlayWithEngin) {
 }
 
 string Board::castling(string castlingType) {
-    if (castlingType == "O-O") {
+    if (castlingType == "0-0") {
         int row = this->getTurn() == 0 ? 7 : 0;
         if (this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
             this->getCell(row, 7)->getPiece()->getQuantMoves() == 0 &&
@@ -383,10 +382,11 @@ string Board::castling(string castlingType) {
             }
             this->movePiece({row, 4}, {row, 6}, false, false);
             this->movePiece({row, 7}, {row, 5}, false, false);
+            this->playerTime = this->playerTime == 1 ? 0 : 1;
             return "S";
         }
     }
-    if (castlingType == "O-O-O") {
+    if (castlingType == "0-0-0") {
         int row = this->getTurn() == 0 ? 7 : 0;
         if (this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
             this->getCell(row, 0)->getPiece()->getQuantMoves() == 0 &&
@@ -403,6 +403,7 @@ string Board::castling(string castlingType) {
             }
             this->movePiece({row, 4}, {row, 2}, false, false);
             this->movePiece({row, 0}, {row, 3}, false, false);
+            this->playerTime = this->playerTime == 1 ? 0 : 1;
             return "S";
         }
     }
