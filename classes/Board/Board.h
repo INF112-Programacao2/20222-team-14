@@ -29,7 +29,7 @@ public:
     ~Board();
 
     string movePiece(PieceIndex piecePosition, PieceIndex destinationPosition,bool isVirtual,bool justCheck);
-    string castling(string clastlingType);
+    string castling(const string& clastlingType);
     bool isGameOver();
 
     Cell *getCell(int x, int y);
@@ -50,6 +50,10 @@ public:
 
     bool getPlayWithEngin();
     void setPlayWithEngin(bool nPlayWithEngin);
+
+    int getPlayerTime();
+    void setPlayerTime(int nPlayerTime);
+    void togglePlayerTime();
 
     bool getFirstMove();
     void setFirstMove(bool nFirstMove);

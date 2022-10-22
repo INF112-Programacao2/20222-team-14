@@ -365,24 +365,27 @@ void Board::setPlayWithEngin(bool nPlayWithEngin) {
     this->playWithEngin = nPlayWithEngin;
 }
 
-string Board::castling(string castlingType) {
+string Board::castling(const string& castlingType) {
     if (castlingType == "0-0") {
         int row = this->getTurn() == 0 ? 7 : 0;
         if (this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
             this->getCell(row, 7)->getPiece()->getQuantMoves() == 0 &&
             !this->getCell(row, 5)->isOccupied &&
             !this->getCell(row, 6)->isOccupied) {
-            Board *virtualthis = new Board(*this);
+            auto *virtualBoard = new Board(*this);
             for (int i = 4; i < 7; i++) {
-                if (virtualthis->isKingInCheck(this->getTurn())) {
-                    delete virtualthis;
+                if (virtualBoard->isKingInCheck(this->getTurn())) {
+                    delete virtualBoard;
                     return "You can't castling with your king in check";
                 }
-                virtualthis->movePiece({row, 4}, {row, i}, true, false);
+                virtualBoard->movePiece({row, 4}, {row, i}, true, false);
             }
-            this->movePiece({row, 4}, {row, 6}, false, false);
-            this->movePiece({row, 7}, {row, 5}, false, false);
-            this->playerTime = this->playerTime == 1 ? 0 : 1;
+            Piece *rook = this->getCell(row, 7)->getPiece();
+            Piece *king = this->getCell(row, 4)->getPiece();
+            this->getCell(row, 6)->setPiece(king);
+            this->getCell(row, 5)->setPiece(rook);
+            this->getCell(row, 4)->removePiece();
+            this->getCell(row, 7)->removePiece();
             return "S";
         }
     }
@@ -393,7 +396,7 @@ string Board::castling(string castlingType) {
             !this->getCell(row, 1)->isOccupied &&
             !this->getCell(row, 2)->isOccupied &&
             !this->getCell(row, 3)->isOccupied) {
-            Board *virtualthis = new Board(*this);
+            auto *virtualthis = new Board(*this);
             for (int i = 4; i > 1; i--) {
                 if (virtualthis->isKingInCheck(this->getTurn())) {
                     delete virtualthis;
@@ -403,7 +406,6 @@ string Board::castling(string castlingType) {
             }
             this->movePiece({row, 4}, {row, 2}, false, false);
             this->movePiece({row, 0}, {row, 3}, false, false);
-            this->playerTime = this->playerTime == 1 ? 0 : 1;
             return "S";
         }
     }
@@ -417,4 +419,16 @@ bool Board::getFirstMove() {
 
 void Board::setFirstMove(bool nFirstMove) {
     this->firstMove = nFirstMove;
+}
+
+void Board::setPlayerTime(int nPlayerTime) {
+    this->playerTime = nPlayerTime;
+}
+
+int Board::getPlayerTime() {
+    return this->playerTime;
+}
+
+void Board::togglePlayerTime() {
+    this->playerTime = this->playerTime == 1 ? 0 : 1;
 }

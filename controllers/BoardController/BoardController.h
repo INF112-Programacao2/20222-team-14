@@ -26,6 +26,8 @@ public:
     void checkPromotion();
 
     bool verifyCheckMate();
+
+    string handleMove(string move);
 };
 
 #endif //INC_20222_TEAM_14_BoardController_H

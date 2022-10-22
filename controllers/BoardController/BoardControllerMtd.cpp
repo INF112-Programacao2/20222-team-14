@@ -35,58 +35,49 @@ void BoardController::drawBoard() {
 }
 
 void BoardController::movePiece() {
+    string res;
+    string move;
     cout << "Make your move" << endl;
     if (board->getTurn() == 0) {
         cout << " - White Pieces turn" << endl;
     } else {
         cout << " - Black Pieces turn" << endl;
     }
-    cout << "Enter the move: ";
-
-
     if (board->getTurn() != 0 && board->getPlayWithEngin()) {
-        string str;
         ConnectToEngine("stockfish.exe");
-        str = getNextMove(position);
-        cout << "stockfish last move " << str << endl;
-//        cout << "stockfish says " << position << endl;
+        move = getNextMove(position);
+        cout << "stockfish says " << move << endl;
         CloseConnection();
-        string res;
-        if(str=="e1g1" || str=="e8g8"){
-            str="0-0";
-        }else if(str=="e1c1" || str=="e8c8"){
-            str="0-0-0";
-        }
-        if (str == "0-0" || str == "0-0-0") {
-            res = board->castling(str);
-        } else {
-            PieceIndex *piecePosition2 = Board::convertPosition(str);
-            res = board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
-        }
-        if (res == "S")
-            this->position += str + " ";
-        else
-            cout << res << endl;
     } else {
-        string move;
+        cout << "Enter the move: ";
         cin >> move;
-        string res;
-        if (move == "0-0" || move == "0-0-0") {
-            res = board->castling(move);
-        } else {
-            PieceIndex *piecePosition = Board::convertPosition(move);
-            res = board->movePiece(piecePosition[0], piecePosition[1], false, false);
-        }
-        if (res == "S" || res == "P")
-            this->position += move + " ";
-        else
-            cout << res << endl;
-
-        if (res == "P")
-            this->checkPromotion();
     }
+    move = this->handleMove(move);
+    if (move == "0-0" || move == "0-0-0") {
+        res = board->castling(move);
+    } else {
+        PieceIndex *piecePosition2 = Board::convertPosition(move);
+        res = board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
+    }
+    if (res == "P") {
+        this->checkPromotion();
+    }
+    if (res == "S" || res == "P") {
+        this->board->togglePlayerTime();
+        this->board->setFirstMove(false);
+        this->position += move + " ";
+    } else {
+        cout << res << endl;
+    }
+}
 
-    this->board->setFirstMove(false);
+string BoardController::handleMove(string move) {
+    if (move == "e1g1" || move == "e8g8") {
+        move = "0-0";
+    } else if (move == "e1c1" || move == "e8c8") {
+        move = "0-0-0";
+    }
+    return move;
 }
 
 void BoardController::checkPromotion() {
@@ -157,6 +148,7 @@ void BoardController::startGame() {
 bool BoardController::verifyCheckMate() {
     return !board->getFirstMove() && board->isKingInCheckMate();
 }
+
 void BoardController::showStatus() {
     TotalPiece totalPieces = board->getTotalPieces();
     cout << "Total Black Pieces: " << totalPieces.totalBlackPieces;
