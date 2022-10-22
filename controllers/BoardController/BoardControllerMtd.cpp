@@ -24,7 +24,7 @@ void BoardController::drawBoard() {
             if (piece == nullptr) {
                 cout << "   ";
             } else {
-                cout << piece->getTeam() << piece->getName() << " ";
+                cout << piece->getQuantMoves() << piece->getName() << " ";
             }
         }
         cout << "   " << 8 - i;

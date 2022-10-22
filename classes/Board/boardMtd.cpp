@@ -9,7 +9,7 @@ Board::Board(Board *board) {
     for (int i = 0; i < 8; i++) {
         this->cells[i] = new Cell[8];
         for (int j = 0; j < 8; j++) {
-            this->cells[i][j] = Cell();
+            (this->cells[i])[j] = Cell();
             if (board->getCell(i, j)->isOccupied) {
                 int team = board->getCell(i, j)->getPiece()->getTeam();
                 if (board->getCell(i, j)->getPiece()->getName() == 'K') {
@@ -365,14 +365,15 @@ void Board::setPlayWithEngin(bool nPlayWithEngin) {
     this->playWithEngin = nPlayWithEngin;
 }
 
-string Board::castling(const string& castlingType) {
+string Board::castling(const string &castlingType) {
     if (castlingType == "0-0") {
         int row = this->getTurn() == 0 ? 7 : 0;
-        if (this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
+        if (this->getCell(row, 4)->isOccupied && this->getCell(row, 7)->isOccupied &&
+            this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
             this->getCell(row, 7)->getPiece()->getQuantMoves() == 0 &&
             !this->getCell(row, 5)->isOccupied &&
             !this->getCell(row, 6)->isOccupied) {
-            auto *virtualBoard = new Board(*this);
+            auto *virtualBoard = new Board(this);
             for (int i = 4; i < 7; i++) {
                 if (virtualBoard->isKingInCheck(this->getTurn())) {
                     delete virtualBoard;
@@ -380,6 +381,7 @@ string Board::castling(const string& castlingType) {
                 }
                 virtualBoard->movePiece({row, 4}, {row, i}, true, false);
             }
+            delete virtualBoard;
             Piece *rook = this->getCell(row, 7)->getPiece();
             Piece *king = this->getCell(row, 4)->getPiece();
             this->getCell(row, 6)->setPiece(king);
@@ -396,16 +398,21 @@ string Board::castling(const string& castlingType) {
             !this->getCell(row, 1)->isOccupied &&
             !this->getCell(row, 2)->isOccupied &&
             !this->getCell(row, 3)->isOccupied) {
-            auto *virtualthis = new Board(*this);
+            auto *virtualBoard = new Board(this);
             for (int i = 4; i > 1; i--) {
-                if (virtualthis->isKingInCheck(this->getTurn())) {
-                    delete virtualthis;
+                if (virtualBoard->isKingInCheck(this->getTurn())) {
+                    delete virtualBoard;
                     return "You can't castling with your king in check";
                 }
-                virtualthis->movePiece({row, 4}, {row, i}, true, false);
+                virtualBoard->movePiece({row, 4}, {row, i}, true, false);
             }
-            this->movePiece({row, 4}, {row, 2}, false, false);
-            this->movePiece({row, 0}, {row, 3}, false, false);
+            delete virtualBoard;
+            Piece *rook = this->getCell(row, 0)->getPiece();
+            Piece *king = this->getCell(row, 4)->getPiece();
+            this->getCell(row, 2)->setPiece(king);
+            this->getCell(row, 3)->setPiece(rook);
+            this->getCell(row, 4)->removePiece();
+            this->getCell(row, 0)->removePiece();
             return "S";
         }
     }
