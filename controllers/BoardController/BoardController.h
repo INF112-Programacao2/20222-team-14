@@ -24,6 +24,8 @@ public:
     void showStatus();
 
     void checkPromotion();
+
+    bool verifyCheckMate();
 };
 
 #endif //INC_20222_TEAM_14_BoardController_H

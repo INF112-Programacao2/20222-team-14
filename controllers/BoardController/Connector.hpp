@@ -50,8 +50,10 @@ std::string getNextMove(std::string position){
     while(read >= sizeof(buffer));
 
     int n = str.find("bestmove");
-    cout << str << endl;
+//    cout << str << endl;
     if (n!=-1) return str.substr(n+9,4);
+    n = str.find("1 pv");
+    if (n!=-1) return str.substr(n+5,4);
     return "error";
 }
 //lower stockfish level

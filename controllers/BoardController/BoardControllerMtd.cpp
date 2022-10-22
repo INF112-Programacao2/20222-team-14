@@ -49,10 +49,15 @@ void BoardController::movePiece() {
         ConnectToEngine("stockfish.exe");
         str = getNextMove(position);
         cout << "stockfish last move " << str << endl;
-        cout << "stockfish says " << position << endl;
+//        cout << "stockfish says " << position << endl;
         CloseConnection();
         string res;
-        if (str == "0-0" || str == "0-0-0" || str=="e1g1" || str=="e1c1" || str=="e8g8" || str=="e8c8") {
+        if(str=="e1g1" || str=="e8g8"){
+            str="O-O";
+        }else if(str=="e1c1" || str=="e8c8"){
+            str="O-O-O";
+        }
+        if (str == "0-0" || str == "0-0-0") {
             res = board->castling(str);
         } else {
             PieceIndex *piecePosition2 = Board::convertPosition(str);
@@ -136,19 +141,22 @@ void BoardController::startGame() {
     cin >> playWithEngin;
     board->setPlayWithEngin(playWithEngin == 'y');
     do {
-        if (!board->getFirstMove() && board->isKingInCheckMate()) {
-            cout << "Check Mate" << endl;
-            endGame();
-            break;
-        }
         cout << "----------------------------------" << endl;
         drawBoard();
         cout << "----------------------------------" << endl;
         showStatus();
+        if (this->verifyCheckMate()) {
+            cout << "Check Mate" << endl;
+            endGame();
+            break;
+        }
         movePiece();
     } while (!board->isGameOver());
 }
 
+bool BoardController::verifyCheckMate() {
+    return !board->getFirstMove() && board->isKingInCheckMate();
+}
 void BoardController::showStatus() {
     TotalPiece totalPieces = board->getTotalPieces();
     cout << "Total Black Pieces: " << totalPieces.totalBlackPieces;
