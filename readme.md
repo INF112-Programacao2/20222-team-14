@@ -28,9 +28,11 @@ Projeto final da disciplina de Programação II (INF112) do semestre letivo 2022
 ### Configuração
 - [Instalação Cmake](https://cmake.org/install/)
 
-- [Interface Gráfica](/docs/install-wxwidgets.md)
 
-- [Documentação seguida para definição das gregas de negócio](https://www.tabuleirodexadrez.com.br/regras-do-xadrez.html)
+### Regras de negócio
+- [tabuleirodexadrez.com.br](https://www.tabuleirodexadrez.com.br/regras-do-xadrez.html)
+- [en.wikipedia.org/wiki/Rules_of_chess](https://en.wikipedia.org/wiki/Rules_of_chess)
+- [chess.com/learn-how-to-play-chess](https://www.chess.com/learn-how-to-play-chess)
 
 
 
