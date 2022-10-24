@@ -1,6 +1,8 @@
 #include "Board.h"
 #include <string>
 #include <cstdlib>
+#include <stdexcept>
+
 
 using namespace std;
 
@@ -91,23 +93,27 @@ string verifyKill(Piece *piece, Piece *destPiece, int xPiecePosition, int yPiece
 }
 
 PieceIndex *Board::convertPosition(const string &positions) {
-    string piecePosition = positions.substr(0, 2);
-    string destPosition = positions.substr(2, 2);
     PieceIndex *pieceIndex = new PieceIndex[2];
-    int yPiecePosition = 0;
-    int xPiecePosition = 0;
-    int yDestinationPosition = 0;
-    int xDestinationPosition = 0;
     try {
+        string piecePosition = positions.substr(0, 2);
+        string destPosition = positions.substr(2, 2);
+        int yPiecePosition = 0;
+        int xPiecePosition = 0;
+        int yDestinationPosition = 0;
+        int xDestinationPosition = 0;
         yPiecePosition = (piecePosition[0] - 'a');
         xPiecePosition = 8 - stoi(piecePosition.substr(1, 1));
         yDestinationPosition = (destPosition[0] - 'a');
         xDestinationPosition = 8 - stoi(destPosition.substr(1, 1));
+        if (xPiecePosition < 0 || xPiecePosition > 7 || yPiecePosition < 0 || yPiecePosition > 7 ||
+            xDestinationPosition < 0 || xDestinationPosition > 7 || yDestinationPosition < 0 ||
+            yDestinationPosition > 7) {
+            throw invalid_argument("Invalid position");
+        }
         pieceIndex[0] = PieceIndex(xPiecePosition, yPiecePosition);
         pieceIndex[1] = PieceIndex(xDestinationPosition, yDestinationPosition);
     } catch (exception e) {
-        pieceIndex[0] = PieceIndex(-1, -1);
-        pieceIndex[1] = PieceIndex(-1, -1);
+        pieceIndex = nullptr;
     }
     return pieceIndex;
 }
@@ -120,11 +126,6 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
     int yPiecePosition = piecePosition.getYPosition();
     int xDestinationPosition = destinationPosition.getXPosition();
     int yDestinationPosition = destinationPosition.getYPosition();
-
-    if (xPiecePosition < 0 || xPiecePosition > 7 || yPiecePosition < 0 || yPiecePosition > 7 ||
-        xDestinationPosition < 0 || xDestinationPosition > 7 || yDestinationPosition < 0 || yDestinationPosition > 7) {
-        return "Invalid position";
-    }
 
     bool isOccupied = this->cells[xPiecePosition][yPiecePosition].isOccupied;
     if (!isOccupied) {

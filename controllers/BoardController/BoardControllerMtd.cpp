@@ -24,7 +24,7 @@ void BoardController::drawBoard() {
             if (piece == nullptr) {
                 cout << "   ";
             } else {
-                cout << piece->getQuantMoves() << piece->getName() << " ";
+                cout << piece->getTeam() << piece->getName() << " ";
             }
         }
         cout << "   " << 8 - i;
@@ -57,6 +57,10 @@ void BoardController::movePiece() {
         res = board->castling(move);
     } else {
         PieceIndex *piecePosition2 = Board::convertPosition(move);
+        if(piecePosition2 == nullptr){
+            cout << "Invalid move" << endl;
+            return;
+        }
         res = board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
     }
     if (res == "P") {
