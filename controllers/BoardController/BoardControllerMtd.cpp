@@ -55,12 +55,13 @@ void BoardController::movePiece() {
     string res;
     string move;
     cout << "Make your move ";
-    if (board->getTurn() == 0) {
+    if (board->getCurrentPlayer() == 0) {
         cout << " - White Pieces turn" << endl;
     } else {
         cout << " - Black Pieces turn" << endl;
+        board->incrementTurns();
     }
-    if (board->getTurn() != 0 && board->getPlayWithEngin()) {
+    if ((board->getCurrentPlayer() != 0 && board->getPlayWithEngin()) || board->getPlayEnginexEngine()) {
         ConnectToEngine("stockfish.exe");
         move = getNextMove(position);
         cout << "stockfish says " << move << endl;
@@ -70,10 +71,10 @@ void BoardController::movePiece() {
         cin >> move;
     }
     move = this->handleMove(move);
-    if (move == "e1g1" || move == "e8g8" || move == "e1c1" || move == "e8c8") {
+    PieceIndex *piecePosition2 = Board::convertPosition(move);
+    if ((move == "e1g1" || move == "e8g8" || move == "e1c1" || move == "e8c8") && board->isKing(piecePosition2[0])) {
         res = board->castling(move);
     } else {
-        PieceIndex *piecePosition2 = Board::convertPosition(move);
         if (piecePosition2 == nullptr) {
             cout << "Invalid move" << endl;
             return;
@@ -93,13 +94,13 @@ void BoardController::movePiece() {
 }
 
 string BoardController::handleMove(string move) {
-    if (this->board->getTurn() == 0 && move == "0-0") {
+    if (this->board->getCurrentPlayer() == 0 && move == "0-0") {
         move = "e1g1";
-    } else if (this->board->getTurn() == 0 && move == "0-0-0") {
+    } else if (this->board->getCurrentPlayer() == 0 && move == "0-0-0") {
         move = "e1c1";
-    } else if (this->board->getTurn() == 1 && move == "0-0") {
+    } else if (this->board->getCurrentPlayer() == 1 && move == "0-0") {
         move = "e8g8";
-    } else if (this->board->getTurn() == 1 && move == "0-0-0") {
+    } else if (this->board->getCurrentPlayer() == 1 && move == "0-0-0") {
         move = "e8c8";
     }
     return move;
@@ -116,7 +117,7 @@ void BoardController::checkPromotion() {
             cout << "2 - Rook" << endl;
             cout << "3 - Bishop" << endl;
             cout << "4 - Knight" << endl;
-            int team = this->board->getTurn() == 0 ? 1 : 0;
+            int team = this->board->getCurrentPlayer() == 0 ? 1 : 0;
             cin >> pieceName;
             switch (pieceName) {
                 case '1':
@@ -144,7 +145,7 @@ void BoardController::checkPromotion() {
 
 void BoardController::endGame() {
     cout << "Game ended" << endl;
-    if (this->board->getTurn() == 0)
+    if (this->board->getCurrentPlayer() == 0)
         cout << "Black team won" << endl;
     else
         cout << "White team won" << endl;
@@ -152,10 +153,14 @@ void BoardController::endGame() {
 }
 
 void BoardController::startGame() {
-    cout << "Do you want to play with the engin? (y/n): ";
+    cout << "Do you want to play with?: " << endl;
+    cout << "1 - Human" << endl;
+    cout << "2 - Stockfish" << endl;
+    cout << "3 - Stockfish vs Stockfish" << endl;
     char playWithEngin;
     cin >> playWithEngin;
-    board->setPlayWithEngin(playWithEngin == 'y');
+    board->setPlayWithEngin(playWithEngin == '2');
+    board->setPlayEnginexEngine(playWithEngin == '3');
     do {
         cout << endl;
         drawBoard();
@@ -176,7 +181,8 @@ bool BoardController::verifyCheckMate() {
 }
 
 void BoardController::showStatus() {
-    TotalPiece totalPieces = board->getTotalPieces();
-    cout << "Total Black Pieces: " << totalPieces.totalBlackPieces;
-    cout << " Total White Pieces: " << totalPieces.totalWhitePieces << endl;
+    cout << "Turn: " << board->getTurns()+1 << endl;
+//    TotalPiece totalPieces = board->getTotalPieces();
+//    cout << "Total Black Pieces: " << totalPieces.totalBlackPieces;
+//    cout << " Total White Pieces: " << totalPieces.totalWhitePieces << endl;
 }

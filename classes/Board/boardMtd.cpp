@@ -31,9 +31,14 @@ Board::Board(Board *board) {
         }
     }
     this->playerTime = board->playerTime;
+    this->playWithEngin = board->playWithEngin;
+    this->playEnginexEngine = board->playEnginexEngine;
+    this->firstMove = board->firstMove;
+    this->turns = board->turns;
 }
 
 Board::Board() {
+    this->turns = 0;
     this->playerTime = 0;
     this->firstMove = true;
     this->cells = new Cell *[8];
@@ -137,7 +142,7 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         destPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
     }
-    if (this->getTurn() != piece->getTeam() && !justCheck) {
+    if (this->getCurrentPlayer() != piece->getTeam() && !justCheck) {
         return "You are trying to move a enemy piece";
     }
 
@@ -275,7 +280,7 @@ Cell *Board::getCell(int x, int y) {
     return cell;
 }
 
-int Board::getTurn() {
+int Board::getCurrentPlayer() {
     return this->playerTime;
 }
 
@@ -366,9 +371,17 @@ void Board::setPlayWithEngin(bool nPlayWithEngin) {
     this->playWithEngin = nPlayWithEngin;
 }
 
+bool Board::getPlayEnginexEngine() {
+    return this->playEnginexEngine;
+}
+
+void Board::setPlayEnginexEngine(bool nPlayEnginexEngine) {
+    this->playEnginexEngine = nPlayEnginexEngine;
+}
+
 string Board::castling(const string &castlingType) {
     if (castlingType == "e8g8" || castlingType == "e1g1") {
-        int row = this->getTurn() == 0 ? 7 : 0;
+        int row = this->getCurrentPlayer() == 0 ? 7 : 0;
         if (this->getCell(row, 4)->isOccupied && this->getCell(row, 7)->isOccupied &&
             this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
             this->getCell(row, 7)->getPiece()->getQuantMoves() == 0 &&
@@ -376,7 +389,7 @@ string Board::castling(const string &castlingType) {
             !this->getCell(row, 6)->isOccupied) {
             auto *virtualBoard = new Board(this);
             for (int i = 4; i < 7; i++) {
-                if (virtualBoard->isKingInCheck(this->getTurn())) {
+                if (virtualBoard->isKingInCheck(this->getCurrentPlayer())) {
                     delete virtualBoard;
                     return "You can't castling with your king in check";
                 }
@@ -393,7 +406,7 @@ string Board::castling(const string &castlingType) {
         }
     }
     if (castlingType == "e8c8" || castlingType == "e1c1") {
-        int row = this->getTurn() == 0 ? 7 : 0;
+        int row = this->getCurrentPlayer() == 0 ? 7 : 0;
         if (this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
             this->getCell(row, 0)->getPiece()->getQuantMoves() == 0 &&
             !this->getCell(row, 1)->isOccupied &&
@@ -401,7 +414,7 @@ string Board::castling(const string &castlingType) {
             !this->getCell(row, 3)->isOccupied) {
             auto *virtualBoard = new Board(this);
             for (int i = 4; i > 1; i--) {
-                if (virtualBoard->isKingInCheck(this->getTurn())) {
+                if (virtualBoard->isKingInCheck(this->getCurrentPlayer())) {
                     delete virtualBoard;
                     return "You can't castling with your king in check";
                 }
@@ -439,4 +452,23 @@ int Board::getPlayerTime() {
 
 void Board::togglePlayerTime() {
     this->playerTime = this->playerTime == 1 ? 0 : 1;
+}
+
+int Board::getTurns() {
+    return this->turns;
+}
+
+void Board::setTurns(int nTurns) {
+    this->turns = nTurns;
+}
+
+void Board::incrementTurns() {
+    this->turns++;
+}
+
+bool Board::isKing(PieceIndex &pieceIndex) {
+    if (!this->getCell(pieceIndex.getXPosition(), pieceIndex.getYPosition())->isOccupied) {
+        return false;
+    }
+    return toupper(this->getCell(pieceIndex.getXPosition(), pieceIndex.getYPosition())->getPiece()->getName()) == 'K';
 }

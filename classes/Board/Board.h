@@ -20,8 +20,11 @@ private:
     Cell **cells;
     int playerTime;
     bool playWithEngin{};
+    bool playEnginexEngine{};
     explicit Board(Board *board);
     bool firstMove;
+    int turns;
+    string *boardHistory;
 
 public:
     Board();
@@ -34,7 +37,7 @@ public:
 
     Cell *getCell(int x, int y);
 
-    int getTurn();
+    int getCurrentPlayer();
 
     TotalPiece getTotalPieces();
 
@@ -51,12 +54,21 @@ public:
     bool getPlayWithEngin();
     void setPlayWithEngin(bool nPlayWithEngin);
 
+    bool getPlayEnginexEngine();
+    void setPlayEnginexEngine(bool nPlayEnginexEngine);
+
     int getPlayerTime();
     void setPlayerTime(int nPlayerTime);
     void togglePlayerTime();
 
     bool getFirstMove();
     void setFirstMove(bool nFirstMove);
+
+    int getTurns();
+    void setTurns(int nTurns);
+    void incrementTurns();
+
+    bool isKing(PieceIndex &pieceIndex);
 };
 
 #endif //INC_20222_TEAM_14_Board_H
