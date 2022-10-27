@@ -15,29 +15,46 @@ BoardController::~BoardController() {
 }
 
 void BoardController::drawBoard() {
-
-    cout << "     a  b  c  d  e  f  g  h" << endl;
+//    cout << "a    b    c    d    e    f    g    h" << endl;
+    cout << "+---+---+---+---+---+---+---+---+\n";
     for (int i = 0; i < 8; i++) {
-        cout << 8 - i << "    ";
-        for (int j = 0; j < 8; j++) {
-            Piece *piece = board->getCell(i, j)->getPiece();
-            if (piece == nullptr) {
-                cout << "   ";
-            } else {
-                cout << piece->getTeam() << piece->getName() << " ";
+        {
+//            cout << 8 - i << " ";
+            for (int j = 0; j < 8; j++) {
+                Piece *piece = board->getCell(i, j)->getPiece();
+                if (piece != nullptr) {
+                    char team = piece->getTeam()==0? piece->getName(): (char) tolower(piece->getName());
+                    cout << "| " << team << " ";
+                } else {
+                    cout << "|   ";
+                }
             }
+            cout << "|  " << 8 - i << endl;
+            cout << "+---+---+---+---+---+---+---+---+" << endl;
         }
-        cout << "   " << 8 - i;
-        //set cout to print the board
-        cout << endl;
     }
-    cout << "     a  b  c  d  e  f  g  h" << endl;
+    cout << "  a   b   c   d   e   f   g   h" << endl;
+//    for (int i = 0; i < 8; i++) {
+//        cout << 8 - i << "    ";
+//        for (int j = 0; j < 8; j++) {
+//            Piece *piece = board->getCell(i, j)->getPiece();
+//            if (piece == nullptr) {
+//                cout << "   ";
+//            } else {
+//                cout << piece->getTeam() << piece->getName() << " ";
+//            }
+//        }
+//        cout << "   " << 8 - i;
+//        //set cout to print the board
+//        cout << endl;
+//    }
+//    cout << "     a  b  c  d  e  f  g  h" << endl;
 }
 
 void BoardController::movePiece() {
     string res;
     string move;
-    cout << "Make your move" << endl;
+    cout << "Make your move ";
     if (board->getTurn() == 0) {
         cout << " - White Pieces turn" << endl;
     } else {
@@ -57,7 +74,7 @@ void BoardController::movePiece() {
         res = board->castling(move);
     } else {
         PieceIndex *piecePosition2 = Board::convertPosition(move);
-        if(piecePosition2 == nullptr){
+        if (piecePosition2 == nullptr) {
             cout << "Invalid move" << endl;
             return;
         }
@@ -76,13 +93,13 @@ void BoardController::movePiece() {
 }
 
 string BoardController::handleMove(string move) {
-    if(this->board->getTurn() ==0 && move == "0-0"){
+    if (this->board->getTurn() == 0 && move == "0-0") {
         move = "e1g1";
-    } else if(this->board->getTurn() ==0 && move == "0-0-0"){
+    } else if (this->board->getTurn() == 0 && move == "0-0-0") {
         move = "e1c1";
-    } else if(this->board->getTurn() ==1 && move == "0-0"){
+    } else if (this->board->getTurn() == 1 && move == "0-0") {
         move = "e8g8";
-    } else if(this->board->getTurn() ==1 && move == "0-0-0"){
+    } else if (this->board->getTurn() == 1 && move == "0-0-0") {
         move = "e8c8";
     }
     return move;
@@ -140,10 +157,11 @@ void BoardController::startGame() {
     cin >> playWithEngin;
     board->setPlayWithEngin(playWithEngin == 'y');
     do {
-        cout << "----------------------------------" << endl;
+        cout << endl;
         drawBoard();
-        cout << "----------------------------------" << endl;
+        cout << endl;
         showStatus();
+        cout << "----------------------------------" << endl;
         if (this->verifyCheckMate()) {
             cout << "Check Mate" << endl;
             endGame();
