@@ -45,4 +45,5 @@ cmake -S . -B Build -G "MinGW Makefiles"
 ### Executando a build
   Para executar a build gerada no passo anterior, basta executar o comando abaixo dentro do dirétorio "build" gerado na raiz do projeto.
 
-     cmake -S . -B Build -G "MinGW Makefiles"
+     cmake --build .
+

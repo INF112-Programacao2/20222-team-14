@@ -7,7 +7,6 @@
 class BoardController {
 private:
     Board *board;
-    bool inGame;
     std::string position;
 public:
     BoardController();
@@ -23,7 +22,7 @@ public:
 
     void showStatus();
 
-    void checkPromotion();
+    void checkPromotion(char piece);
 
     bool verifyCheckMate();
 

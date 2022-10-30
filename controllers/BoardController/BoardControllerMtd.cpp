@@ -1,5 +1,5 @@
 #include <iostream>
-#include <iomanip>
+#include <algorithm>
 #include "BoardController.h"
 #include "Connector.hpp"
 
@@ -7,7 +7,7 @@ using namespace std;
 
 BoardController::BoardController() {
     board = new Board();
-    this->inGame = true;
+    position = "";
 }
 
 BoardController::~BoardController() {
@@ -23,7 +23,7 @@ void BoardController::drawBoard() {
             for (int j = 0; j < 8; j++) {
                 Piece *piece = board->getCell(i, j)->getPiece();
                 if (piece != nullptr) {
-                    char team = piece->getTeam()==0? piece->getName(): (char) tolower(piece->getName());
+                    char team = piece->getTeam() == 0 ? piece->getName() : (char) tolower(piece->getName());
                     cout << "| " << team << " ";
                 } else {
                     cout << "|   ";
@@ -54,6 +54,7 @@ void BoardController::drawBoard() {
 void BoardController::movePiece() {
     string res;
     string move;
+    string rawMove;
     cout << "Make your move ";
     if (board->getCurrentPlayer() == 0) {
         cout << " - White Pieces turn" << endl;
@@ -70,7 +71,13 @@ void BoardController::movePiece() {
         cout << "Enter the move: ";
         cin >> move;
     }
-    move = this->handleMove(move);
+    rawMove = this->handleMove(move);
+    // remove last character from rawMove and put the cutted string in move
+    if (rawMove.size() == 5) {
+        move = rawMove.substr(0, rawMove.size() - 1);
+    } else {
+        move = rawMove;
+    }
     PieceIndex *piecePosition2 = Board::convertPosition(move);
     if ((move == "e1g1" || move == "e8g8" || move == "e1c1" || move == "e8c8") && board->isKing(piecePosition2[0])) {
         res = board->castling(move);
@@ -82,18 +89,20 @@ void BoardController::movePiece() {
         res = board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
     }
     if (res == "P") {
-        this->checkPromotion();
+        this->checkPromotion(rawMove.size() == 5 ? rawMove[rawMove.size() - 1] : 'O');
     }
     if (res == "S" || res == "P") {
         this->board->togglePlayerTime();
         this->board->setFirstMove(false);
-        this->position += move + " ";
+        this->position += rawMove + " ";
     } else {
         cout << res << endl;
     }
 }
 
 string BoardController::handleMove(string move) {
+    // remove white spaces
+    move.erase(remove(move.begin(), move.end(), ' '), move.end());
     if (this->board->getCurrentPlayer() == 0 && move == "0-0") {
         move = "e1g1";
     } else if (this->board->getCurrentPlayer() == 0 && move == "0-0-0") {
@@ -106,37 +115,40 @@ string BoardController::handleMove(string move) {
     return move;
 }
 
-void BoardController::checkPromotion() {
+void BoardController::checkPromotion(char pieceName = 'O') {
     PieceIndex pieceIndex = this->board->checkPromotion();
     if (pieceIndex.getXPosition() != -1) {
-        char pieceName;
         Piece *piece;
         do {
             cout << "Promote your piece to: " << endl;
-            cout << "1 - Queen" << endl;
-            cout << "2 - Rook" << endl;
-            cout << "3 - Bishop" << endl;
-            cout << "4 - Knight" << endl;
-            int team = this->board->getCurrentPlayer() == 0 ? 1 : 0;
-            cin >> pieceName;
+            cout << "q - Queen" << endl;
+            cout << "r - Rook" << endl;
+            cout << "b - Bishop" << endl;
+            cout << "n - Knight" << endl;
+            int team = this->board->getCurrentPlayer() == 1 ? 1 : 0;
+            if (pieceName == 'O') {
+                cin >> pieceName;
+            }else{
+                cout << "stockfish says " << pieceName << endl;
+            }
             switch (pieceName) {
-                case '1':
+                case 'q':
                     piece = new Queen('Q', team);
                     break;
-                case '2':
+                case 'r':
                     piece = new Rook('R', team);
                     break;
-                case '3':
+                case 'b':
                     piece = new Bishop('B', team);
                     break;
-                case '4':
-                    piece = new Knight('K', team);
+                case 'n':
+                    piece = new Knight('N', team);
                     break;
                 default:
                     cout << "Invalid option" << endl;
                     return;
             }
-        } while (pieceName != '1' && pieceName != '2' && pieceName != '3' && pieceName != '4');
+        } while (pieceName != 'q' && pieceName != 'r' && pieceName != 'b' && pieceName != 'n');
         this->board->promotePiece(piece, pieceIndex);
 
     }
@@ -149,6 +161,7 @@ void BoardController::endGame() {
         cout << "Black team won" << endl;
     else
         cout << "White team won" << endl;
+    position = "";
     delete board;
 }
 
@@ -181,7 +194,7 @@ bool BoardController::verifyCheckMate() {
 }
 
 void BoardController::showStatus() {
-    cout << "Turn: " << board->getTurns()+1 << endl;
+    cout << "Turn: " << board->getTurns() + 1 << endl;
 //    TotalPiece totalPieces = board->getTotalPieces();
 //    cout << "Total Black Pieces: " << totalPieces.totalBlackPieces;
 //    cout << " Total White Pieces: " << totalPieces.totalWhitePieces << endl;

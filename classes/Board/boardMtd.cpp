@@ -253,13 +253,13 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
 }
 
 PieceIndex Board::checkPromotion() {
-    PieceIndex pieceIndex;
-    int row = this->playerTime == 0 ? 7 : 0;
+    PieceIndex pieceIndex = PieceIndex(-1, -1);
+    int row = this->playerTime == 1 ? 7 : 0;
     for (int i = 0; i < 8; i++) {
         if (this->cells[row][i].isOccupied) {
             Piece *piece = this->cells[row][i].getPiece();
-            if (piece->getName() == 'P' && piece->getTeam() != this->playerTime) {
-                pieceIndex = PieceIndex(0, i);
+            if (piece->getName() == 'P' && piece->getTeam() == this->playerTime) {
+                pieceIndex = PieceIndex(row, i);
                 return pieceIndex;
             }
         }

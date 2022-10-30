@@ -38,8 +38,7 @@ std::string getNextMove(std::string position){
     position = "position startpos moves "+position+"\ngo\n";    
 
     WriteFile(pipin_w, position.c_str(), position.length(),&writ, NULL);
-    Sleep(500);
-    //dd
+    Sleep(300);
         
     PeekNamedPipe(pipout_r, buffer,sizeof(buffer), &read, &available, NULL);   
     do{   
@@ -52,7 +51,7 @@ std::string getNextMove(std::string position){
 
     int n = str.find("bestmove");
 //    cout << str << endl;
-    if (n!=-1) return str.substr(n+9,4);
+    if (n!=-1) return str.substr(n+9,5);
     n = str.find("1 pv");
     if (n!=-1) return str.substr(n+5,4);
     return "error";
