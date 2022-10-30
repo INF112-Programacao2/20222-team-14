@@ -1,6 +1,8 @@
 #include "Board.h"
 #include <string>
 #include <cstdlib>
+#include <stdexcept>
+
 
 using namespace std;
 
@@ -29,9 +31,14 @@ Board::Board(Board *board) {
         }
     }
     this->playerTime = board->playerTime;
+    this->playWithEngin = board->playWithEngin;
+    this->playEnginexEngine = board->playEnginexEngine;
+    this->firstMove = board->firstMove;
+    this->turns = board->turns;
 }
 
 Board::Board() {
+    this->turns = 0;
     this->playerTime = 0;
     this->firstMove = true;
     this->cells = new Cell *[8];
@@ -91,23 +98,27 @@ string verifyKill(Piece *piece, Piece *destPiece, int xPiecePosition, int yPiece
 }
 
 PieceIndex *Board::convertPosition(const string &positions) {
-    string piecePosition = positions.substr(0, 2);
-    string destPosition = positions.substr(2, 2);
     PieceIndex *pieceIndex = new PieceIndex[2];
-    int yPiecePosition = 0;
-    int xPiecePosition = 0;
-    int yDestinationPosition = 0;
-    int xDestinationPosition = 0;
     try {
+        string piecePosition = positions.substr(0, 2);
+        string destPosition = positions.substr(2, 2);
+        int yPiecePosition = 0;
+        int xPiecePosition = 0;
+        int yDestinationPosition = 0;
+        int xDestinationPosition = 0;
         yPiecePosition = (piecePosition[0] - 'a');
         xPiecePosition = 8 - stoi(piecePosition.substr(1, 1));
         yDestinationPosition = (destPosition[0] - 'a');
         xDestinationPosition = 8 - stoi(destPosition.substr(1, 1));
+        if (xPiecePosition < 0 || xPiecePosition > 7 || yPiecePosition < 0 || yPiecePosition > 7 ||
+            xDestinationPosition < 0 || xDestinationPosition > 7 || yDestinationPosition < 0 ||
+            yDestinationPosition > 7) {
+            throw invalid_argument("Invalid position");
+        }
         pieceIndex[0] = PieceIndex(xPiecePosition, yPiecePosition);
         pieceIndex[1] = PieceIndex(xDestinationPosition, yDestinationPosition);
     } catch (exception e) {
-        pieceIndex[0] = PieceIndex(-1, -1);
-        pieceIndex[1] = PieceIndex(-1, -1);
+        pieceIndex = nullptr;
     }
     return pieceIndex;
 }
@@ -121,11 +132,6 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
     int xDestinationPosition = destinationPosition.getXPosition();
     int yDestinationPosition = destinationPosition.getYPosition();
 
-    if (xPiecePosition < 0 || xPiecePosition > 7 || yPiecePosition < 0 || yPiecePosition > 7 ||
-        xDestinationPosition < 0 || xDestinationPosition > 7 || yDestinationPosition < 0 || yDestinationPosition > 7) {
-        return "Invalid position";
-    }
-
     bool isOccupied = this->cells[xPiecePosition][yPiecePosition].isOccupied;
     if (!isOccupied) {
         return "There is no piece in this position";
@@ -136,7 +142,7 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
     if (this->cells[xDestinationPosition][yDestinationPosition].isOccupied) {
         destPiece = this->cells[xDestinationPosition][yDestinationPosition].getPiece();
     }
-    if (this->getTurn() != piece->getTeam() && !justCheck) {
+    if (this->getCurrentPlayer() != piece->getTeam() && !justCheck) {
         return "You are trying to move a enemy piece";
     }
 
@@ -274,7 +280,7 @@ Cell *Board::getCell(int x, int y) {
     return cell;
 }
 
-int Board::getTurn() {
+int Board::getCurrentPlayer() {
     return this->playerTime;
 }
 
@@ -365,9 +371,17 @@ void Board::setPlayWithEngin(bool nPlayWithEngin) {
     this->playWithEngin = nPlayWithEngin;
 }
 
+bool Board::getPlayEnginexEngine() {
+    return this->playEnginexEngine;
+}
+
+void Board::setPlayEnginexEngine(bool nPlayEnginexEngine) {
+    this->playEnginexEngine = nPlayEnginexEngine;
+}
+
 string Board::castling(const string &castlingType) {
     if (castlingType == "e8g8" || castlingType == "e1g1") {
-        int row = this->getTurn() == 0 ? 7 : 0;
+        int row = this->getCurrentPlayer() == 0 ? 7 : 0;
         if (this->getCell(row, 4)->isOccupied && this->getCell(row, 7)->isOccupied &&
             this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
             this->getCell(row, 7)->getPiece()->getQuantMoves() == 0 &&
@@ -375,7 +389,7 @@ string Board::castling(const string &castlingType) {
             !this->getCell(row, 6)->isOccupied) {
             auto *virtualBoard = new Board(this);
             for (int i = 4; i < 7; i++) {
-                if (virtualBoard->isKingInCheck(this->getTurn())) {
+                if (virtualBoard->isKingInCheck(this->getCurrentPlayer())) {
                     delete virtualBoard;
                     return "You can't castling with your king in check";
                 }
@@ -392,7 +406,7 @@ string Board::castling(const string &castlingType) {
         }
     }
     if (castlingType == "e8c8" || castlingType == "e1c1") {
-        int row = this->getTurn() == 0 ? 7 : 0;
+        int row = this->getCurrentPlayer() == 0 ? 7 : 0;
         if (this->getCell(row, 4)->getPiece()->getQuantMoves() == 0 &&
             this->getCell(row, 0)->getPiece()->getQuantMoves() == 0 &&
             !this->getCell(row, 1)->isOccupied &&
@@ -400,7 +414,7 @@ string Board::castling(const string &castlingType) {
             !this->getCell(row, 3)->isOccupied) {
             auto *virtualBoard = new Board(this);
             for (int i = 4; i > 1; i--) {
-                if (virtualBoard->isKingInCheck(this->getTurn())) {
+                if (virtualBoard->isKingInCheck(this->getCurrentPlayer())) {
                     delete virtualBoard;
                     return "You can't castling with your king in check";
                 }
@@ -438,4 +452,23 @@ int Board::getPlayerTime() {
 
 void Board::togglePlayerTime() {
     this->playerTime = this->playerTime == 1 ? 0 : 1;
+}
+
+int Board::getTurns() {
+    return this->turns;
+}
+
+void Board::setTurns(int nTurns) {
+    this->turns = nTurns;
+}
+
+void Board::incrementTurns() {
+    this->turns++;
+}
+
+bool Board::isKing(PieceIndex &pieceIndex) {
+    if (!this->getCell(pieceIndex.getXPosition(), pieceIndex.getYPosition())->isOccupied) {
+        return false;
+    }
+    return toupper(this->getCell(pieceIndex.getXPosition(), pieceIndex.getYPosition())->getPiece()->getName()) == 'K';
 }
