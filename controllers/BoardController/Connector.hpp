@@ -39,6 +39,7 @@ std::string getNextMove(std::string position){
 
     WriteFile(pipin_w, position.c_str(), position.length(),&writ, NULL);
     Sleep(500);
+    //dd
         
     PeekNamedPipe(pipout_r, buffer,sizeof(buffer), &read, &available, NULL);   
     do{   
