@@ -1,6 +1,6 @@
 #include <iostream>
 #include "./controllers/BoardController/BoardController.h"
-
+#include "interface\interface.cpp"
 using namespace std;
 
 int main() {

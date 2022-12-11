@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include "BoardController.h"
-#include "Connector.hpp"
+// #include "Connector.hpp"
 
 using namespace std;
 
@@ -51,9 +51,9 @@ void BoardController::drawBoard() {
 //    cout << "     a  b  c  d  e  f  g  h" << endl;
 }
 
-void BoardController::movePiece() {
+void BoardController::movePiece(string move) {
     string res;
-    string move;
+    
     string rawMove;
     cout << "Make your move ";
     if (board->getCurrentPlayer() == 0) {
@@ -63,10 +63,10 @@ void BoardController::movePiece() {
         board->incrementTurns();
     }
     if ((board->getCurrentPlayer() != 0 && board->getPlayWithEngin()) || board->getPlayEnginexEngine()) {
-        ConnectToEngine("stockfish.exe");
-        move = getNextMove(position);
+        // ConnectToEngine("stockfish.exe");
+        // move = getNextMove(position);
         cout << "stockfish says " << move << endl;
-        CloseConnection();
+        // CloseConnection();
     } else {
         cout << "Enter the move: ";
         cin >> move;
@@ -176,7 +176,7 @@ void BoardController::startGame() {
     board->setPlayEnginexEngine(playWithEngin == '3');
     do {
         cout << endl;
-        drawBoard();
+        // drawBoard();
         cout << endl;
         showStatus();
         cout << "----------------------------------" << endl;
@@ -185,7 +185,7 @@ void BoardController::startGame() {
             endGame();
             break;
         }
-        movePiece();
+        // movePiece();
     } while (!board->isGameOver());
 }
 

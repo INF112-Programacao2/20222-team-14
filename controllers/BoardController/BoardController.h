@@ -18,7 +18,7 @@ public:
 
     void drawBoard();
 
-    void movePiece();
+    void movePiece(string move);
 
     void showStatus();
 

@@ -15,6 +15,8 @@ include_directories(classes/Cell)
 include_directories(classes/Bishop)
 include_directories(classes/PieceIndex)
 include_directories(controllers/BoardController)
+include_directories(interface)
+
 
 add_executable(20222_team_14
         classes/Board/Board.h
@@ -41,4 +43,5 @@ add_executable(20222_team_14
         classes/PieceIndex/pieceIndexMtd.cpp
         controllers/BoardController/BoardController.h
         controllers/BoardController/BoardControllerMtd.cpp
+        interface/interface.cpp
         main.cpp)
