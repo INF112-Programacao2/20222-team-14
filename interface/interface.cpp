@@ -142,12 +142,16 @@ position="";
                         cout << "Move: " << move << endl;
                         if (boardController->res == "S" || boardController->res == "P") {
                             moveB(move);
+                            if (oldPos!=newPos) 
+                            position+=move+" ";
+                            f[n].setPosition(newPos);  
+                        }else {
+                            cout <<boardController->res << endl;
+                            move = "";
+                            this->boardController->setMove(move);
+                            f[n].setPosition(oldPos); 
                         }
                     } 
-                
-                  
-                  if (oldPos!=newPos) position+=move+" ";
-                  f[n].setPosition(newPos);                   
                  }       
                          
         }
