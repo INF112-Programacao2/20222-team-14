@@ -4,11 +4,15 @@
 
 #include "../../classes/Board/Board.h"
 
+
 class BoardController {
 private:
     Board *board;
     std::string position;
+    std::string move;
+
 public:
+
     BoardController();
 
     ~BoardController();
@@ -18,7 +22,12 @@ public:
 
     void drawBoard();
 
-    void movePiece(string move);
+    std::string res;
+    
+    void movePiece();
+    std :: string getMove();
+
+    void setMove(std::string move);
 
     void showStatus();
 

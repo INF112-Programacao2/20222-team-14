@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include "BoardController.h"
+
 // #include "Connector.hpp"
 
 using namespace std;
@@ -8,11 +9,44 @@ using namespace std;
 BoardController::BoardController() {
     board = new Board();
     position = "";
+ 
+    
 }
 
 BoardController::~BoardController() {
     delete board;
 }
+
+std::string BoardController::getMove() {
+    return move;
+}
+
+void BoardController::setMove(std::string move) {
+    this->move = move;
+}
+
+
+
+
+
+
+
+
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
 
 void BoardController::drawBoard() {
 //    cout << "a    b    c    d    e    f    g    h" << endl;
@@ -51,11 +85,11 @@ void BoardController::drawBoard() {
 //    cout << "     a  b  c  d  e  f  g  h" << endl;
 }
 
-void BoardController::movePiece(string move) {
-    string res;
-    
+void BoardController::movePiece() {
     string rawMove;
+    if (move != ""){
     cout << "Make your move ";
+  
     if (board->getCurrentPlayer() == 0) {
         cout << " - White Pieces turn" << endl;
     } else {
@@ -69,7 +103,6 @@ void BoardController::movePiece(string move) {
         // CloseConnection();
     } else {
         cout << "Enter the move: ";
-        cin >> move;
     }
     rawMove = this->handleMove(move);
     // remove last character from rawMove and put the cutted string in move
@@ -95,6 +128,7 @@ void BoardController::movePiece(string move) {
         this->board->togglePlayerTime();
         this->board->setFirstMove(false);
         this->position += rawMove + " ";
+    }
     } else {
         cout << res << endl;
     }
@@ -174,19 +208,11 @@ void BoardController::startGame() {
     cin >> playWithEngin;
     board->setPlayWithEngin(playWithEngin == '2');
     board->setPlayEnginexEngine(playWithEngin == '3');
-    do {
+    
         cout << endl;
-        // drawBoard();
         cout << endl;
         showStatus();
         cout << "----------------------------------" << endl;
-        if (this->verifyCheckMate()) {
-            cout << "Check Mate" << endl;
-            endGame();
-            break;
-        }
-        // movePiece();
-    } while (!board->isGameOver());
 }
 
 bool BoardController::verifyCheckMate() {

@@ -1,6 +1,7 @@
-﻿
-#include "interface.h"
-
+﻿#include "interface.h"
+#include <string>
+#include <iostream>
+using namespace std;
 string Interface::toChessNote (Vector2f p) {
     std::string s = "";
     s += char(p.x / 56 + 97);
@@ -11,15 +12,24 @@ string Interface::toChessNote (Vector2f p) {
 Vector2f Interface::toCoord(char a, char b) {
     int x = int(a) - 97;
     int y = 7 - int(b) + 49;
-    return Vector2f(x, y);
+    return Vector2f(x*56, y*56);
 }
 
-void Interface::move(std::string str) {
-    Vector2f oldPos = toCoord(str[0], str[1]);
-    Vector2f newPos = toCoord(str[2], str[3]);
-    int n = board[int(oldPos.y)][int(oldPos.x)];
-    board[int(oldPos.y)][int(oldPos.x)] = 0;
-    board[int(newPos.y)][int(newPos.x)] = n;
+void Interface::moveB(std::string str) {
+    Vector2f oldPos = toCoord(str[0],str[1]);
+    Vector2f newPos = toCoord(str[2],str[3]);
+
+    for(int i=0;i<32;i++)
+     if (f[i].getPosition()==newPos) f[i].setPosition(-100,-100);
+        
+    for(int i=0;i<32;i++)
+     if (f[i].getPosition()==oldPos) f[i].setPosition(newPos);
+
+    //castling       //if the king didn't move
+    if (str=="e1g1") if (position.find("e1")==-1) moveB("h1f1"); 
+    if (str=="e8g8") if (position.find("e8")==-1) moveB("h8f8");
+    if (str=="e1c1") if (position.find("e1")==-1) moveB("a1d1");
+    if (str=="e8c8") if (position.find("e8")==-1) moveB("a8d8");
 }
 
 void Interface::loadPosition() {
@@ -36,17 +46,32 @@ void Interface::loadPosition() {
         }
 }
 
+// void Interface::promotion(){
+    
+// }
 
-void Interface::startGame() {
-    Interface interface;
+
+
+
+
+
+Interface::Interface(BoardController  *boardController) {
+     this->boardController = boardController;
+     boardController->startGame();
+     move = "";
+}
+ 
+void Interface:: moveBack() {
+         if (this->position.length()>6)
+                 this->position.erase(this->position.length()-6,5);
+                 this->loadPosition();
 }
 
+void Interface :: drawBoard(){
 
-
-Interface::Interface() {
 int size = 56;
 Vector2f offset(28,28);
-std::string position="";
+position="";
 
  RenderWindow window(VideoMode(504, 504), "The Chess! (press SPACE)");
 
@@ -64,11 +89,11 @@ std::string position="";
     bool isMove=false;
     float dx=0, dy=0;
     Vector2f oldPos,newPos;
-    std::string str;
     int n=0; 
 
-    while (window.isOpen())
-    {
+   do{
+    
+      
         Vector2i pos = Mouse::getPosition(window) - Vector2i(offset);
 
         Event e;
@@ -78,9 +103,11 @@ std::string position="";
                 window.close();
 
             ////move back//////
-            if (e.type == Event::KeyPressed)
-                if (e.key.code == Keyboard::BackSpace)
-                { if (position.length()>6) position.erase(position.length()-6,5); loadPosition();}
+                  if (e.type == Event::KeyPressed)
+                         if (e.key.code == Keyboard::BackSpace)
+                { 
+                    moveBack();
+                 }
 
             /////drag and drop///////
             if (e.type == Event::MouseButtonPressed)
@@ -93,6 +120,7 @@ std::string position="";
                        dx=pos.x - f[i].getPosition().x;
                        dy=pos.y - f[i].getPosition().y;
                        oldPos  =  f[i].getPosition();
+                    
                       }
 
              if (e.type == Event::MouseButtonReleased)
@@ -101,11 +129,27 @@ std::string position="";
                   isMove=false;
                   Vector2f p = f[n].getPosition() + Vector2f(size/2,size/2);
                   newPos = Vector2f( size*int(p.x/size), size*int(p.y/size) );
-                  str = toChessNote(oldPos)+toChessNote(newPos);
-                  move(str); 
-                  if (oldPos!=newPos) position+=str+" ";
+       
+                    if (boardController->verifyCheckMate()) {
+                        cout << "Check Mate" << endl;
+                        boardController->endGame();
+                        // break;
+                    }
+                    move = toChessNote(oldPos)+toChessNote(newPos);
+                    if (move != "" && boardController->getMove() != move) {
+                        this->boardController->setMove(move);
+                        boardController->movePiece();
+                        cout << "Move: " << move << endl;
+                        if (boardController->res == "S" || boardController->res == "P") {
+                            moveB(move);
+                        }
+                    } 
+                
+                  
+                  if (oldPos!=newPos) position+=move+" ";
                   f[n].setPosition(newPos);                   
-                 }                       
+                 }       
+                         
         }
 
        //comp move
@@ -113,8 +157,8 @@ std::string position="";
        {
         //  str =  getNextMove(position);
                    
-         oldPos = toCoord(str[0],str[1]);
-         newPos = toCoord(str[2],str[3]);
+         oldPos = toCoord(move[0],move[1]);
+         newPos = toCoord(move[2],move[3]);
          
          for(int i=0;i<32;i++) if (f[i].getPosition()==oldPos) n=i;
          
@@ -130,7 +174,7 @@ std::string position="";
             window.display();
           }
 
-        move(str);  position+=str+" ";
+        moveB(move);  position+=move+" ";
         f[n].setPosition(newPos); 
         }
 
@@ -143,8 +187,7 @@ std::string position="";
     for(int i=0;i<32;i++) window.draw(f[i]); window.draw(f[n]);
     for(int i=0;i<32;i++) f[i].move(-offset);
     window.display();
-    }
-
+    }while (window.isOpen());
     // CloseConnection();
 }
 

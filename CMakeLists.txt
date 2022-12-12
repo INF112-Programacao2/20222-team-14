@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 project(20222_team_14)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
+
 
 
 include_directories(classes/Board)
@@ -43,5 +44,10 @@ add_executable(20222_team_14
         classes/PieceIndex/pieceIndexMtd.cpp
         controllers/BoardController/BoardController.h
         controllers/BoardController/BoardControllerMtd.cpp
+        interface/interface.h
         interface/interface.cpp
+        lib/SFML/include/SFML/Graphics.hpp
         main.cpp)
+
+        add_subdirectory(lib/SFML)
+        target_link_libraries(${PROJECT_NAME} PRIVATE sfml-window sfml-graphics)
