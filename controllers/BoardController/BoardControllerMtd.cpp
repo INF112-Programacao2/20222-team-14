@@ -15,11 +15,9 @@ BoardController::~BoardController() {
 }
 
 void BoardController::drawBoard() {
-//    cout << "a    b    c    d    e    f    g    h" << endl;
     cout << "+---+---+---+---+---+---+---+---+\n";
     for (int i = 0; i < 8; i++) {
         {
-//            cout << 8 - i << " ";
             for (int j = 0; j < 8; j++) {
                 Piece *piece = board->getCell(i, j)->getPiece();
                 if (piece != nullptr) {
@@ -34,21 +32,6 @@ void BoardController::drawBoard() {
         }
     }
     cout << "  a   b   c   d   e   f   g   h" << endl;
-//    for (int i = 0; i < 8; i++) {
-//        cout << 8 - i << "    ";
-//        for (int j = 0; j < 8; j++) {
-//            Piece *piece = board->getCell(i, j)->getPiece();
-//            if (piece == nullptr) {
-//                cout << "   ";
-//            } else {
-//                cout << piece->getTeam() << piece->getName() << " ";
-//            }
-//        }
-//        cout << "   " << 8 - i;
-//        //set cout to print the board
-//        cout << endl;
-//    }
-//    cout << "     a  b  c  d  e  f  g  h" << endl;
 }
 
 void BoardController::movePiece() {
@@ -128,7 +111,7 @@ void BoardController::checkPromotion(char pieceName = 'O') {
             int team = this->board->getCurrentPlayer() == 1 ? 1 : 0;
             if (pieceName == 'O') {
                 cin >> pieceName;
-            }else{
+            } else {
                 cout << "stockfish says " << pieceName << endl;
             }
             switch (pieceName) {
@@ -157,10 +140,12 @@ void BoardController::checkPromotion(char pieceName = 'O') {
 
 void BoardController::endGame() {
     cout << "Game ended" << endl;
-    if (this->board->getCurrentPlayer() == 0)
-        cout << "Black team won" << endl;
-    else
-        cout << "White team won" << endl;
+    if(!this->verifyDraw()) {
+        if (this->board->getCurrentPlayer() == 0)
+            cout << "Black team won" << endl;
+        else
+            cout << "White team won" << endl;
+    }
     position = "";
     delete board;
 }
@@ -185,6 +170,18 @@ void BoardController::startGame() {
             endGame();
             break;
         }
+        if (this->verifyDraw()) {
+            char draw = board->isDraw();
+            if (draw == 'F') {
+                cout << "Draw by 50 moves rule" << endl;
+            } else if (draw == 'I') {
+                cout << "Draw by insufficient material" << endl;
+            } else if (draw == 'S') {
+                cout << "Draw by stalemate" << endl;
+            }
+            endGame();
+            break;
+        }
         movePiece();
     } while (!board->isGameOver());
 }
@@ -193,8 +190,14 @@ bool BoardController::verifyCheckMate() {
     return !board->getFirstMove() && board->isKingInCheckMate();
 }
 
+bool BoardController::verifyDraw() {
+    return !board->getFirstMove() && board->isDraw() != 'N';
+    return false;
+}
+
 void BoardController::showStatus() {
     cout << "Turn: " << board->getTurns() + 1 << endl;
+    cout << "Turns without capture: " << this->board->getTurnsWithoutCapture() << endl;
 //    TotalPiece totalPieces = board->getTotalPieces();
 //    cout << "Total Black Pieces: " << totalPieces.totalBlackPieces;
 //    cout << " Total White Pieces: " << totalPieces.totalWhitePieces << endl;

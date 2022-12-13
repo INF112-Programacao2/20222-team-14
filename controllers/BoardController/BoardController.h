@@ -26,6 +26,8 @@ public:
 
     bool verifyCheckMate();
 
+    bool verifyDraw();
+
     string handleMove(string move);
 };
 

@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <stdexcept>
 
-
 using namespace std;
 
 Board::Board(Board *board) {
@@ -35,12 +34,16 @@ Board::Board(Board *board) {
     this->playEnginexEngine = board->playEnginexEngine;
     this->firstMove = board->firstMove;
     this->turns = board->turns;
+    this->pieceCount = board->pieceCount;
+    this->turnsWithoutCapture = board->turnsWithoutCapture;
 }
 
 Board::Board() {
     this->turns = 0;
     this->playerTime = 0;
     this->firstMove = true;
+    this->pieceCount = 32;
+    this->turnsWithoutCapture = 0;
     this->cells = new Cell *[8];
     for (int i = 0; i < 8; i++) {
         this->cells[i] = new Cell[8];
@@ -243,6 +246,12 @@ Board::movePiece(PieceIndex piecePosition, PieceIndex destinationPosition, bool 
 
     if (!justCheck) {
         piece->incrementQuantMoves();
+        if (destPiece != nullptr) {
+            this->pieceCount--;
+            this->turnsWithoutCapture = 0;
+        } else {
+            this->turnsWithoutCapture++;
+        }
         this->cells[xDestinationPosition][yDestinationPosition].setPiece(piece);
         this->cells[xPiecePosition][yPiecePosition].removePiece();
         if (piece->checkPromotion(xDestinationPosition, yDestinationPosition)) {
@@ -331,15 +340,7 @@ bool Board::isKingInCheckMate() {
     int xKingPosition = 0;
     int yKingPosition = 0;
     int team = this->playerTime;
-//    for (int i = 0; i < 8; i++) {
-//        for (int j = 0; j < 8; j++) {
-//            Cell *cell = this->cells[i] + j;
-//            if (cell->isOccupied && cell->getPiece()->getName() == 'K' && cell->getPiece()->getTeam() == team) {
-//                xKingPosition = i;
-//                yKingPosition = j;
-//            }
-//        }
-//    }
+
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             Cell *cell = this->cells[i] + j;
@@ -471,4 +472,95 @@ bool Board::isKing(PieceIndex &pieceIndex) {
         return false;
     }
     return toupper(this->getCell(pieceIndex.getXPosition(), pieceIndex.getYPosition())->getPiece()->getName()) == 'K';
+}
+
+bool Board::isStaleMate() {
+    bool somePieceCanMove = false;
+    int team = this->playerTime;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            Cell *cell = this->cells[i] + j;
+            if (cell->isOccupied && cell->getPiece()->getTeam() == team) {
+                for (int k = 0; k < 8; k++) {
+                    for (int l = 0; l < 8; l++) {
+                        if (cell->getPiece()->checkMove(i, j, k, l)) {
+                            auto *virtualBoard = new Board(this);
+                            if (virtualBoard->movePiece({i, j}, {k, l}, true, false) == "S") {
+                                somePieceCanMove = true;
+                            }
+                            delete virtualBoard;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (!somePieceCanMove && !this->isKingInCheck(team)) {
+        return true;
+    }
+    return false;
+}
+
+bool Board::isDeadPosition() {
+    return false;
+}
+
+bool Board::isInsufficientMaterial() {
+    if (this->pieceCount <= 4) {
+        if (this->pieceCount == 2) {
+            return true;
+        }
+        int whiteB = 0;
+        int blackB = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Cell *cell = this->cells[i] + j;
+                if (this->pieceCount == 3) {
+                    if (cell->isOccupied && cell->getPiece()->getName() == 'N' || cell->getPiece()->getName() == 'B') {
+                        return true;
+                    }
+                } else if (this->pieceCount == 4) {
+                    if (cell->isOccupied && cell->getPiece()->getName() == 'B') {
+                        if (cell->getPiece()->getTeam() == 0) {
+                            whiteB++;
+                        } else {
+                            blackB++;
+                        }
+                    }
+                }
+            }
+        }
+        if (whiteB == 1 && blackB == 1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Board::isFiftyMoves() {
+    if(this->turnsWithoutCapture >= 50) {
+        return true;
+    }else{
+        return false;
+    }
+}
+
+char Board::isDraw() {
+    if (this->isStaleMate()) {
+        return 'S';
+    }
+    if (this->isDeadPosition()) {
+        return 'D';
+    }
+    if (this->isInsufficientMaterial()) {
+        return 'I';
+    }
+    if (this->isFiftyMoves()) {
+        return 'F';
+    }
+    return 'N';
+}
+
+int Board::getTurnsWithoutCapture() {
+    return this->turnsWithoutCapture;
 }
