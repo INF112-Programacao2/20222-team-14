@@ -53,7 +53,7 @@ std::string getNextMove(std::string position){
 //    cout << str << endl;
     if (n!=-1) return str.substr(n+9,5);
     n = str.find("1 pv");
-    if (n!=-1) return str.substr(n+5,4);
+    if (n!=-1) return str.substr(n+5,5);
     return "error";
 }
 //lower stockfish level
