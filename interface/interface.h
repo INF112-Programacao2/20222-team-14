@@ -39,6 +39,7 @@ public:
      void loadPosition();
      void promotion();
      void moveBack();
+    void promotion(Sprite f);
     Interface(BoardController *boardController);
     void drawBoard();
     void movePiece( std::string move);

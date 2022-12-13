@@ -50,7 +50,9 @@ void Interface::loadPosition() {
     
 // }
 
-
+void Interface::promotion(Sprite f) {
+f = ;
+}
 
 
 
@@ -90,10 +92,15 @@ position="";
     float dx=0, dy=0;
     Vector2f oldPos,newPos;
     int n=0; 
+    bool a=true;
+   do{  
 
-   do{
-    
-      
+        if (a){
+        boardController->movePiece();
+        a=false;
+        }
+        
+
         Vector2i pos = Mouse::getPosition(window) - Vector2i(offset);
 
         Event e;
@@ -133,53 +140,73 @@ position="";
                     if (boardController->verifyCheckMate()) {
                         cout << "Check Mate" << endl;
                         boardController->endGame();
+                        window.close();
                         // break;
                     }
+                    
                     move = toChessNote(oldPos)+toChessNote(newPos);
-                    if (move != "" && boardController->getMove() != move) {
-                        this->boardController->setMove(move);
-                        boardController->movePiece();
-                        cout << "Move: " << move << endl;
-                        if (boardController->res == "S" || boardController->res == "P") {
-                            moveB(move);
-                            if (oldPos!=newPos) 
-                            position+=move+" ";
-                            f[n].setPosition(newPos);  
-                        }else {
-                            cout <<boardController->res << endl;
-                            move = "";
-                            this->boardController->setMove(move);
-                            f[n].setPosition(oldPos); 
-                        }
-                    } 
+                    cout << "Move: " << move << endl;
                  }       
                          
         }
 
        //comp move
-       if (Keyboard::isKeyPressed(Keyboard::Space))
-       {
-        //  str =  getNextMove(position);
-                   
-         oldPos = toCoord(move[0],move[1]);
-         newPos = toCoord(move[2],move[3]);
-         
-         for(int i=0;i<32;i++) if (f[i].getPosition()==oldPos) n=i;
-         
-         /////animation///////
-         for(int k=0;k<50;k++)
-          {
-            Vector2f p = newPos - oldPos;
-            f[n].move(p.x/50, p.y/50); 
-            window.draw(sBoard);
-            for(int i=0;i<32;i++) f[i].move(offset);
-            for(int i=0;i<32;i++) window.draw(f[i]); window.draw(f[n]);
-            for(int i=0;i<32;i++) f[i].move(-offset);
-            window.display();
-          }
-
-        moveB(move);  position+=move+" ";
-        f[n].setPosition(newPos); 
+        if ( boardController->getMove() != move && move != "") {
+            if (boardController->confirm) {
+                cout << "Engine move" << endl;
+                a=true;
+                move = boardController->getMove();
+                oldPos = toCoord(move[0],move[1]);
+                newPos = toCoord(move[2],move[3]);
+                for(int i=0;i<32;i++) 
+                if (f[i].getPosition()==oldPos) 
+                n=i;
+                
+                /////animation///////
+                for(int k=0;k<50;k++)
+                {
+                    Vector2f p = newPos - oldPos;
+                    f[n].move(p.x/50, p.y/50); 
+                    window.draw(sBoard);
+                    for(int i=0;i<32;i++) f[i].move(offset);
+                    for(int i=0;i<32;i++) window.draw(f[i]); window.draw(f[n]);
+                    for(int i=0;i<32;i++) f[i].move(-offset);
+                    window.display();
+                }
+                boardController->confirm = false;
+                moveB(move);  
+                position+=move+" ";
+                f[n].setPosition(newPos); 
+                cout << "Move: " << move << endl;
+                a=true;
+                if (oldPos!=newPos) 
+                position+=move+" ";
+                    f[n].setPosition(newPos);  
+                boardController->confirm = false;
+                
+            }else{ 
+                
+                this->boardController->setMove(move);
+                boardController->movePiece();
+                cout << "Move: " << move << endl;
+                if (boardController->res == "S" || boardController->res == "P") {
+                    moveB(move);
+                    if (oldPos!=newPos) 
+                    position+=move+" ";
+                    a= true;
+                    f[n].setPosition(newPos);  
+                    move = "";
+                }else {
+                    cout <<boardController->res << endl;
+                    move = "";
+                    boardController->setMove(move);
+                    f[n].setPosition(oldPos); 
+                }
+                if(boardController->res == "P") {
+                    boardController->checkPromotion(boardController->rawMove.size() == 5 ? boardController->rawMove[boardController->rawMove.size() - 1] : 'O');
+                    promotion(f[n]);
+                }
+            }
         }
 
         if (isMove) f[n].setPosition(pos.x-dx,pos.y-dy);

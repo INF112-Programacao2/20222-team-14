@@ -7,23 +7,25 @@
 
 class BoardController {
 private:
-    Board *board;
+    
     std::string position;
     std::string move;
 
 public:
-
+    Board *board;
+    bool confirm;
+    void setPosition(string s);
     BoardController();
 
     ~BoardController();
 
     void startGame();
     void endGame();
-
+    void PubliccheckPromotion(char piece);
     void drawBoard();
-
+    string pieceName;
     std::string res;
-    
+    string rawMove;
     void movePiece();
     std :: string getMove();
 

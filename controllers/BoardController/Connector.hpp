@@ -28,6 +28,9 @@ void ConnectToEngine(char* path){
    sti.hStdInput = pipin_r;
    sti.hStdOutput = pipout_w;
    sti.hStdError = pipout_w;
+  
+
+
 
    CreateProcess(NULL, path , NULL, NULL, TRUE,0, NULL, NULL, &sti, &pi);
 }

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "BoardController.h"
 
-// #include "Connector.hpp"
+#include "Connector.hpp"
 
 using namespace std;
 
@@ -24,28 +24,6 @@ std::string BoardController::getMove() {
 void BoardController::setMove(std::string move) {
     this->move = move;
 }
-
-
-
-
-
-
-
-
-
-
-
-     
-
-
-
-
-
-
-
-
-
-
 
 
 void BoardController::drawBoard() {
@@ -88,21 +66,20 @@ void BoardController::drawBoard() {
 void BoardController::movePiece() {
     string rawMove;
     if (move != ""){
-    cout << "Make your move ";
+    cout << "Make your move "<< endl;
   
-    if (board->getCurrentPlayer() == 0) {
-        cout << " - White Pieces turn" << endl;
-    } else {
-        cout << " - Black Pieces turn" << endl;
-        board->incrementTurns();
-    }
+
     if ((board->getCurrentPlayer() != 0 && board->getPlayWithEngin()) || board->getPlayEnginexEngine()) {
-        // ConnectToEngine("stockfish.exe");
-        // move = getNextMove(position);
+        confirm = true;
+         char stoco[] = "stockfish.exe";
+        ConnectToEngine(stoco);
+        cout << "stockfish sayssss " << position << endl;
+        
+        move = getNextMove(position);
         cout << "stockfish says " << move << endl;
-        // CloseConnection();
+        CloseConnection();
     } else {
-        cout << "Enter the move: ";
+        cout << "Enter the move: "<<endl;
     }
     rawMove = this->handleMove(move);
     // remove last character from rawMove and put the cutted string in move
@@ -122,7 +99,7 @@ void BoardController::movePiece() {
         res = board->movePiece(piecePosition2[0], piecePosition2[1], false, false);
     }
     if (res == "P") {
-        this->checkPromotion(rawMove.size() == 5 ? rawMove[rawMove.size() - 1] : 'O');
+        this->PubliccheckPromotion(rawMove.size() == 5 ? rawMove[rawMove.size() - 1] : 'O');
     }
     if (res == "S" || res == "P") {
         this->board->togglePlayerTime();
@@ -132,8 +109,14 @@ void BoardController::movePiece() {
     } else {
         cout << res << endl;
     }
+   cout << "sdgsdgsdg";
 }
-
+void BoardController::PubliccheckPromotion(char piece){
+    this->checkPromotion(piece);
+}
+void BoardController::setPosition(string s){
+    position = s;
+}
 string BoardController::handleMove(string move) {
     // remove white spaces
     move.erase(remove(move.begin(), move.end(), ' '), move.end());
